@@ -8,8 +8,8 @@ main:
     url : /web/
   - title : AI
     url : /ai/
-  - title : Project
-    url : /project/
+  - title : Projects
+    url : /projects/
   # - title: "Sample Posts"
   #   url: /year-archive/
   # - title: "Sample Collections"
