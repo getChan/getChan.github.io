@@ -3,7 +3,7 @@ title:  "인터넷방송 유해도 산출을 통한 필터링 시스템"
 excerpt: "데이터청년캠퍼스 프로젝트"
 
 categories:
-  - project
+  - projects
 tags:
   - 데이터청년캠퍼스
   - project
