@@ -1,6 +1,9 @@
 ---
 title: "프로젝트"
-excerpt: "진행한 프로젝트들에 대한 기록들"
-permalink: /projects/
+
+permalink: /categories/projects/
+layout: category
+
 author_profile: true
+taxonomy : projects
 ---
