@@ -9,7 +9,7 @@ main:
   - title : AI
     url : /ai/
   - title : Projects
-    url : /projects/
+    url : categories/projects/
   # - title: "Sample Posts"
   #   url: /year-archive/
   # - title: "Sample Collections"
