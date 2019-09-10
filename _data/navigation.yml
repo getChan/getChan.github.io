@@ -1,13 +1,15 @@
 # main links
 main:
-  - title: "블로그 방문하기"
+  - title: "Home"
     url: https://getchan.github.io
   - title : "Categories"
     url : /categories/
   - title : Web
-    url : /web/
+    url : categories/web/
   - title : AI
-    url : /ai/
+    url : categories/ai/
+  - title : DB
+    url : categories/db/
   - title : Projects
     url : categories/projects/
   # - title: "Sample Posts"
