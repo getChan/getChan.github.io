@@ -5,10 +5,9 @@ excerpt: "책 '파이썬 자료구조와 알고리즘' 정리"
 categories:
   - web
 tags:
-  - data_structure
-  - algorithm
   - study
   - book
+  - python
 last_modified_at: 2019-09-30T08:06:00-05:00
 ---
 
