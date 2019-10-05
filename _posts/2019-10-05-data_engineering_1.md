@@ -43,7 +43,6 @@ echo "Hello world ${name}"
 3. `A` 폴더 안에 `a_1.txt` ~ `a_4.txt` 만들기
 4. `A` 폴더를 `B`폴더로 복사
 5. `B` 폴더 내 파일명 변경 : `a_` -> `b_`
-6. 3~5 과정을 `C`폴더에도 같이
    
 ```shell
 mkdir -p ./test/A/ # 1,2
@@ -55,9 +54,32 @@ rename a_ b_ a_?.txt # 5
 
 ```shell
 folder_name='test_2'
-mkdir -p $folder_name/A/ # 1,2
-touch $folder_name/A/{a_1,a_2,a_3}.txt # 3
-cp -r $folder_name/A $folder_name/B # 4
+mkdir -p $folder_name/A/
+touch $folder_name/A/{a_1,a_2,a_3}.txt
+cp -r $folder_name/A $folder_name/B
 cd $folder_name/B/
-rename a_ b_ a_?.txt # 5
+rename a_ b_ a_?.txt
 ```
+
+### 환경 변수
+`echo $HOME` : 홈 디렉토리를 출력한다
+
+`export` : 환경 변수들을 보여준다.
+
+환경 변수 추가하기 : `export folder_name = 'test_1000'`
+
+다시 쉘 스크립트 실행하면 환경 변수를 그대로 가져와서 `test_1000` 폴더를 생성한다.
+
+### 인자  전달하기
+```shell
+folder_name=$1 # 첫 번째 positional argment
+mkdir -p $folder_name/A/
+touch $folder_name/A/{a_1,a_2,a_3}.txt
+cp -r $folder_name/A $folder_name/B
+cd $folder_name/B/
+rename a_ b_ a_?.txt
+```
+`sh test.sh test_args`로 커맨드를 하면 `test_args`가 `folder_name`이 된다.
+
+## 파이썬 파일과 연동하기
+파이썬 파일을 쉘 스크립트에서 실행할 수 있다. --> 무한 응용 가능~~!!
