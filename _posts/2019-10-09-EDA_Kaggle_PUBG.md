@@ -849,7 +849,7 @@ plt.show()
 ```
 
 
-![png](./pugb-overall-eda-top-10-players/output_20_0.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_20_0.png)
 
 
 스쿼드와 듀오가 가장 인기있음을 보여줍니다. 이제 각 타입들을 세 개의 메인 카테고리로 aggregate 해보겠습니다.
@@ -913,7 +913,7 @@ aggregated_mt.plot.pie(y='count', legend='True', autopct='%.1f');
 ```
 
 
-![png](./pugb-overall-eda-top-10-players/output_23_0.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_23_0.png)
 
 
 54% 이상의 매치가 스쿼드 모드에서 플레이되었음을 보여줍니다.
@@ -927,7 +927,7 @@ plt.show()
 ```
 
 
-![png](./pugb-overall-eda-top-10-players/output_26_0.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_26_0.png)
 
 
 킬 수와 준 데미지에는 분명한 상관관계가 있습니다. 또한 몇몇 이상치들이 있습니다. 60킬 이상은 대다수 플레이어보다 한참 높은 수치입니다.
@@ -1078,7 +1078,7 @@ print("Maximum number of headshots that the player scored: " + str(train["headsh
     
 
 
-![png](./pugb-overall-eda-top-10-players/output_31_1.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_31_1.png)
 
 
 DBNO - Down But Not Out. 플레이어가 기록한 DBNO 값입니다.
@@ -1094,7 +1094,7 @@ print("Mean number of DBNOs that the player scored: " + str(train["DBNOs"].mean(
     
 
 
-![png](./pugb-overall-eda-top-10-players/output_33_1.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_33_1.png)
 
 
 DBNO와 kill간 상관관계가 있을까요?
@@ -1105,7 +1105,7 @@ train.plot.scatter(x='DBNOs', y='kills', figsize=(15,10));
 ```
 
 
-![png](./pugb-overall-eda-top-10-players/output_35_0.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_35_0.png)
 
 
 DBNO와 kill은 상관관계가 있습니다. 
@@ -1124,7 +1124,7 @@ plt.show()
 ```
 
 
-![png](./pugb-overall-eda-top-10-players/output_37_0.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_37_0.png)
 
 
 
@@ -1175,7 +1175,7 @@ walk0_rows.hist('winPlacePerc', bins=40, figsize = (15,7))
 
 
 
-![png](./pugb-overall-eda-top-10-players/output_43_2.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_43_2.png)
 
 
 대부분의 걷지 않은 플레이어는 꼴등이다. 그러나 소수는 치킨까지 뜯었다. 이것은 개수작임이 분명하다. 의심되는 플레이어를 찾아보자.
@@ -1555,11 +1555,11 @@ plt.show()
 ```
 
 
-![png](./pugb-overall-eda-top-10-players/output_49_0.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_49_0.png)
 
 
 
-![png](./pugb-overall-eda-top-10-players/output_49_1.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_49_1.png)
 
 
 모든 이동거리를 합쳐 분포를 살펴보자.
@@ -1579,7 +1579,7 @@ travel_dist.hist(bins=40, figsize = (15,10))
 
 
 
-![png](./pugb-overall-eda-top-10-players/output_51_1.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_51_1.png)
 
 
 ### e) Weapons acquired [^](#7) <a id="7"></a> <br>
@@ -1603,7 +1603,7 @@ train.hist('weaponsAcquired', figsize = (20,10),range=(0, 10), align="left", rwi
 
 
 
-![png](./pugb-overall-eda-top-10-players/output_53_2.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_53_2.png)
 
 
 ### f) Correlation map [^](#8) <a id="8"></a> <br>
@@ -1622,7 +1622,7 @@ sns.heatmap(train.corr(), annot=True)
 
 
 
-![png](./pugb-overall-eda-top-10-players/output_55_1.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_55_1.png)
 
 
 
@@ -1632,7 +1632,7 @@ plt.show()
 ```
 
 
-![png](./pugb-overall-eda-top-10-players/output_56_0.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_56_0.png)
 
 
 ## 3-Analysis of TOP 10% of players [^](#9) <a id="9"></a> <br>
@@ -1663,7 +1663,7 @@ top10.plot(x="kills", y="damageDealt", kind="scatter", figsize = (15,10))
 
 
 
-![png](./pugb-overall-eda-top-10-players/output_58_2.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_58_2.png)
 
 
 이동거리를 전체 플레이어와 비교하며 살펴보자.
@@ -1682,7 +1682,7 @@ print("Average walking distance: " + str(top10['walkDistance'].mean()))
     
 
 
-![png](./pugb-overall-eda-top-10-players/output_60_1.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_60_1.png)
 
 
 
@@ -1698,7 +1698,7 @@ print("Average riding distance: " + str(top10['rideDistance'].mean()))
     
 
 
-![png](./pugb-overall-eda-top-10-players/output_61_1.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_61_1.png)
 
 
 가장 멀리서 죽인 거리는 얼마일까?
@@ -1720,5 +1720,5 @@ plt.show()
 ```
 
 
-![png](./pugb-overall-eda-top-10-players/output_65_0.png)
+![png]({{site.url}}/assets/images/pugb-overall-eda-top-10-players/output_65_0.png)
 
