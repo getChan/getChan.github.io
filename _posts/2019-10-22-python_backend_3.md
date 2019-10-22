@@ -16,7 +16,10 @@ last_modified_at: 2019-10-22T08:06:00-05:00
 ---
 > Google Cloud Platform 에 만든 VM에 DB를 구축하고 실습했다.
 > CentOS, MariaDB 사용.
+
+
 ## API에 데이터베이스 연결하기
+
 일단. 데이터베이스에 접속하자
 ```shell
 mysql -u root -p 
@@ -79,7 +82,6 @@ conda install mysql-connector-python
 ```
 db연결 정보를 저장할 파일을 만들자.
 ```python
-
 db = {
   'user' : 'chan',
   'password' : 'boazadv',
@@ -189,30 +191,30 @@ http -v POST localhost:5000/tweet id=1 tweet='Hello World'
 ## timeline 엔드포인트
 db에 있는 데이터를 읽어서 json형태로 변화하여 HTTP response한다.
 ```python
-  @app.route('/timeline/<int:user_id>', methods=['GET'])
-  def timeline(user_id):
-    # LEFT JOIN을 사용하여 팔로우가 없더라도 해당 사용자의 트윗을 가져온다.
-    rows = app.database.execute(text('''
-      SELECT
-        t.user_id,
-        t.tweet
-      FROM tweets t
-      LEFT JOIN users_follow_list ufl ON ufl.user_id = :user_id
-      WHERE t.user_id = :user_id
-      OR t.user_id = ufl.follow_user_id
-    '''), {
-      'user_id' : user_id
-    }).fetchall()
-    print(rows)
-    timeline = [{
-      'user_id' : row['user_id'],
-      'tweet' : row['tweet']
-    } for row in rows]
+@app.route('/timeline/<int:user_id>', methods=['GET'])
+def timeline(user_id):
+  # LEFT JOIN을 사용하여 팔로우가 없더라도 해당 사용자의 트윗을 가져온다.
+  rows = app.database.execute(text('''
+    SELECT
+      t.user_id,
+      t.tweet
+    FROM tweets t
+    LEFT JOIN users_follow_list ufl ON ufl.user_id = :user_id
+    WHERE t.user_id = :user_id
+    OR t.user_id = ufl.follow_user_id
+  '''), {
+    'user_id' : user_id
+  }).fetchall()
+  print(rows)
+  timeline = [{
+    'user_id' : row['user_id'],
+    'tweet' : row['tweet']
+  } for row in rows]
 
-    return jsonify([{
-      'user_id' : user_id,
-      'timeline' : timeline
-    }])
+  return jsonify([{
+    'user_id' : user_id,
+    'timeline' : timeline
+  }])
 ```
 테스트
 ```shell
