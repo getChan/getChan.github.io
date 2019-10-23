@@ -3,7 +3,7 @@ title: "DE 스터디(1) - 리눅스 커맨드"
 excerpt: "data engineering 스터디 정리입니다."
 
 categories:
-  - db
+  - data
 tags:
   - study
   - linux

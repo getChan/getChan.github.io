@@ -1,9 +1,9 @@
 ---
 title: "데이터베이스"
 
-permalink: /categories/db/
+permalink: /categories/algorithm/
 layout: category
 
 author_profile: true
-taxonomy : db
+taxonomy : algorithm
 ---

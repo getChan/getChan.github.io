@@ -3,7 +3,7 @@ title:  "파이썬 자료구조와 알고리즘(4)-구조와 모듈"
 excerpt: "책 '파이썬 자료구조와 알고리즘' 정리"
 
 categories:
-  - web
+  - algorithm
 tags:
   - study
   - book

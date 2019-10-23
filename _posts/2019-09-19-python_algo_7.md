@@ -3,7 +3,7 @@ title:  "파이썬 자료구조와 알고리즘(7)-추상 데이터 타입"
 excerpt: "책 '파이썬 자료구조와 알고리즘' 정리"
 
 categories:
-  - web
+  - algorithm
 tags:
   - data_structure
   - algorithm

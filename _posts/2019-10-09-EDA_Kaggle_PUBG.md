@@ -3,7 +3,7 @@ title: "캐글 EDA - PUBG"
 excerpt: "EDA 연습을 위한 kaggle PUBG competition EDA"
 
 categories:
-  - ai
+  - data
 tags:
   - kaggle
   - data analysis

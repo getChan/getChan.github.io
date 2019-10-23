@@ -3,7 +3,7 @@ title: "캐글 EDA - Time Series"
 excerpt: "EDA 연습을 위한 kaggle Time Series EDA tutorial"
 
 categories:
-  - ai
+  - data
 tags:
   - kaggle
   - data analysis

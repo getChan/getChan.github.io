@@ -3,7 +3,7 @@ title:  "파이썬 자료구조와 알고리즘(6)-파이썬 고급 주제"
 excerpt: "책 '파이썬 자료구조와 알고리즘' 정리"
 
 categories:
-  - web
+  - algorithm
 tags:
   - study
   - book
