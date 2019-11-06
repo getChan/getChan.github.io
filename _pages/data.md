@@ -1,5 +1,5 @@
 ---
-title: "data"
+title: "Data"
 
 permalink: /categories/data/
 layout: category

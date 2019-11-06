@@ -1,5 +1,5 @@
 ---
-title: "데이터베이스"
+title: "알고리즘 이론, 풀이"
 
 permalink: /categories/algorithm/
 layout: category

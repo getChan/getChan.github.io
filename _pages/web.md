@@ -1,5 +1,5 @@
 ---
-title: "WEB"
+title: "Web"
 
 permalink: /categories/web/
 layout: category
