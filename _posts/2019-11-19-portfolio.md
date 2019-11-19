@@ -1,6 +1,6 @@
 ---
 title:  "남궁찬의 포트폴리오"
-excerpt: "개발자 남궁찬의 포트폴리오"
+excerpt: "개발자 지망생 남궁찬의 포트폴리오"
 
 categories:
   - project
@@ -9,9 +9,11 @@ tags:
 last_modified_at: 2019-11-19T08:06:00-05:00
 ---
 > 끊임없이 성장하고 새로운 것을 반기는 개발자 지망생
+
+
 # Profile
 
-### 남궁찬
+## 남궁찬
 
 - GitHub 
   
@@ -34,37 +36,37 @@ last_modified_at: 2019-11-19T08:06:00-05:00
 
 # Skills
 
-### Programming Language
+- Programming Language
 
-- Python
-- SQL
-- Java
+  - Python
+  - SQL
+  - Java
   
-### Backend
+- Backend
 
-- Flask
-- RDBMS
+  - Flask
+  - RDBMS
   
-### Data Science
+- Data Science
 
-- Natural Lanuage Processing
-- Data Scraping
-- Deep Learning by `Tensorflow`
-- Machine Learning by `Scikit-Learn`
-- Python Data Analysis tools (Numpy, Pandas, matplotlib, etc..)
+  - Natural Lanuage Processing
+  - Data Scraping
+  - Deep Learning by `Tensorflow`
+  - Machine Learning by `Scikit-Learn`
+  - Python Data Analysis tools (Numpy, Pandas, matplotlib, etc..)
 
-### Environment / DevOps
+- Environment / DevOps
 
-- Linux
-- AWS
-- GCP
-- Docker(Basic)
-- Hadoop(Basic)
-- Shell Script(Basic)
+  - Linux
+  - AWS
+  - GCP
+  - Docker(Basic)
+  - Hadoop(Basic)
+  - Shell Script(Basic)
 
-### Tool
+- Tool
 
-- Git / GitHub
+  - Git / GitHub
   
 # Projects
 
