@@ -37,18 +37,15 @@ last_modified_at: 2019-11-19T08:06:00-05:00
 # Skills
 
 - Programming Language
-
   - Python
   - SQL
   - Java
   
 - Backend
-
   - Flask
   - RDBMS
   
 - Data Science
-
   - Natural Lanuage Processing
   - Data Scraping
   - Deep Learning by `Tensorflow`
@@ -56,7 +53,6 @@ last_modified_at: 2019-11-19T08:06:00-05:00
   - Python Data Analysis tools (Numpy, Pandas, matplotlib, etc..)
 
 - Environment / DevOps
-
   - Linux
   - AWS
   - GCP
@@ -65,7 +61,6 @@ last_modified_at: 2019-11-19T08:06:00-05:00
   - Shell Script(Basic)
 
 - Tool
-
   - Git / GitHub
   
 # Projects
