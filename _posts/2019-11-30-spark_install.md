@@ -74,7 +74,7 @@ java 설치한 뒤 `JAVA_HOME`이 제대로 설정된다면 잘 실행되는 것
 ```shell
 spark-shell
 ```
-```shell
+```
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
