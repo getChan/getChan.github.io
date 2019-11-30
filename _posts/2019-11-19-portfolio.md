@@ -3,7 +3,7 @@ title:  "남궁찬의 포트폴리오"
 excerpt: "개발자 지망생 남궁찬의 포트폴리오"
 
 categories:
-  - project
+  - projects
 tags:
   - portfolio
 last_modified_at: 2019-11-19T08:06:00-05:00
