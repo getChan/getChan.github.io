@@ -39,7 +39,7 @@ last_modified_at: 2019-11-19T08:06:00-05:00
 - Programming Language
   - Python
   - SQL
-  - Java
+  - Java(Basic)
   
 - Backend
   - Flask
@@ -54,10 +54,8 @@ last_modified_at: 2019-11-19T08:06:00-05:00
 
 - Environment / DevOps
   - Linux
-  - AWS
-  - GCP
+  - AWS, GCP
   - Docker(Basic)
-  - Hadoop(Basic)
   - Shell Script(Basic)
 
 - Tool
