@@ -1,5 +1,5 @@
 ---
-title: "DE 스터디(2) - Hadoop / Spark"
+title: "DE 스터디(6) - Hadoop / Spark"
 excerpt: "data engineering 스터디 정리입니다."
 
 categories:
