@@ -1,5 +1,5 @@
 ---
-title: "DE 스터디(6) - Hadoop / Spark"
+title: "DE 스터디(6) - Hadoop ​:elephant:​"
 excerpt: "data engineering 스터디 정리입니다."
 
 categories:
@@ -8,25 +8,73 @@ tags:
   - study
   - linux
   - dataEnginnering
-last_modified_at: 2019-11-30T08:06:00-05:00
+  - hadoop
+last_modified_at: 2019-12-04T08:06:00-05:00
 ---
+​:elephant:​
+
+# Parallel Computing
+
+## 병렬 처리
+
+- 여러 개의 코어를 사용하여 동시에 연산을 처리하는 것
+- 크고 복잡한 문제를 작게 나누어 빠르게 해결
+- 프로세서(코어)간 커뮤니케이션은 shared memory또는 message passing으로 이루어짐
+- 병렬 처리의 종류
+  - 비트 수준(BLP)
+    - 프로세스가 처리하는 비트 수를 늘려서 속도 향상
+    - Instruction level parallelism
+  - 데이터 수준(DLP)
+    - 프로그램 루프에 내재된 병렬화
+    - task-level parallelism
+
+## 분산 처리
+
+- 인터넷에 연결된 여러 컴퓨터들의 처리 능력을 이용하여 거대한 계산 문제를 해결하는 기술
+- 가상의 대용량 고성능 컴퓨터(super virtual computer)를 구성하여 처리
+- 컴퓨터들은 익명이며, 각자 메모리를 보유하고 있음
+- 병렬 처리와 다르면서도 비슷한 개념(다중 코어 사용 연산은 병렬 처리와 동일)
+- 분산 처리의 특징
+  - 고가용성(High Availability)
+    - 한 대의 노드가 고장나더라도 다른 노드에서 연산을 이어서 수행 가능하다
+  - 위치 투명성(Transparency)
+    - 네트워크에 연결된 노드들은 모든 자원을 로컬 자원처럼 다룰 수 있어야 함 -> 분산파일시스템(DFS) 제공
+  - 수평 확장성(Scale-Out)
+    - 노드 자체의 성능을 올리는 것이 아니라, 노드를 추가함으로써 시스템 성능 향상
+
+## Cloud Computing
+
+- 정보를 자신의 컴퓨터가 아닌 인터넷에 연결된 다른 컴퓨터(데이터센터)에서 처리하는 기술
+- 병렬 처리와 분산 처리를 활용
+- 구성 가능한 컴퓨팅 자원(서버, 저장소 등)에 대해 어디서나 접근 가능
+- 주문한 만큼 자원 사용
+  - 자원을 유연하게 운용 가능하고 self-design 용이
 
 # Hadoop
 
+- High Availability **distributed** Object-Oriented platform
+- 분산 컴퓨팅(클라우드 컴퓨팅) 기술을 활용한 대용량 데이터 분산 처리
+- 빅데이터를 위한 범용 저장소 및 분석 플랫폼 제공
+- 단일에서 수천 대의 머신으로 확장 가능하도록 설계
+- java로 구현
+
 - 장점
-  - 오픈소스
-  - 장비 추가 용이(Scale-Out)
+  - 오픈소스로 라이선스 비용 부담 감소
+  - 시스템 중단 없이 장비 추가 용이(Scale-Out)
   - 안정적이고 확장성이 높음
+    - 하둡을 기바느로 다양한 오픈소스 프레임워크가 구현되어 있음 (ex. spark)
+    - 일부 장비에 장애가 발생해도 전체 시스템에는 영향이 없음(fault-Tolerance)
   - 대용량 데이터의 일괄(배치) 처리 가능
 - 단점
   - 저장된 데이터 변경 불가(안정성을 위함)
     - 변경은 데이터 삭제 후 새로 생성하는 것
-  - 속도가 느림 -> 실시간 데이터 처리에 부적함
+  - 속도가 느림 -> 실시간 데이터 처리에 부적합
   - 설치와 설정이 어려움
 
 ## 구성 요소
 
 - 하둡 일반
+  - 다른 모듈을 지원하기 위한 공통 Component
 - HDFS
 - YARN (Resource Manager, Job Scheduler)
   - 전체적으로 job을 분배
