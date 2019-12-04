@@ -74,7 +74,7 @@ last_modified_at: 2019-12-04T08:06:00-05:00
 
 ## 구성 요소
 
-![1575473189489](\assets\images\data_enginnering_study\hadoop_ecosystem.png)
+![1575473189489](/assets/images/data_enginnering_study/hadoop_ecosystem.png)
 
 - 하둡 일반
   - 다른 모듈을 지원하기 위한 공통 Component (자바 유틸리티)
@@ -133,7 +133,7 @@ last_modified_at: 2019-12-04T08:06:00-05:00
     - 스토리지 서브시스템 단순화
     - Fault tolerance, high-availability에 필요한 replication 구현에 적합
 
-![1575474248239](\assets\images\data_enginnering_study\hdfs.png)
+![1575474248239](/assets/images/data_enginnering_study/hdfs.png)
 
 - 네임 노드, 데이터 노드
   - HDFS는 마스터/슬레이브 구조로, 하나의 네임 노드와 여러개의 데이터 노드로 구성
@@ -149,7 +149,7 @@ last_modified_at: 2019-12-04T08:06:00-05:00
     - 보조 네임 노드 운영
 - HDFS 동작 방식
 
-![1575474840895](\assets\images\data_enginnering_study\hdfs2.png)
+![1575474840895](/assets/images/data_enginnering_study/hdfs2.png)
 
 1. hadoop 클라이언트가 네임 노드에 파일 생성을 요청한다
 2. 네임 노드는 클라이언트가 요청한 파일 정보에서 해당 경로에 대한 파일 정보를 메모리에 생성하고 락을 생성한다
