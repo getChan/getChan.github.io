@@ -9,7 +9,7 @@ tags:
   - linux
   - dataEnginnering
   - docker
-  - kubernetics
+  - kubernetes
 last_modified_at: 2019-12-04T08:06:00-05:00
 ---
 
