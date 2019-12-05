@@ -3,7 +3,7 @@ title:  "spark 설치"
 excerpt: "centos7에 Spark 설치하기"
 
 categories:
-  - Data
+  - data
 tags:
   - BOAZ
   - DataEnginnering
