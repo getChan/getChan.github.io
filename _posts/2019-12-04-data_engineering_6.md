@@ -112,7 +112,7 @@ last_modified_at: 2019-12-04T08:06:00-05:00
 
 # HDFS :card_file_box:
 
-### 개요
+## 개요
 
 - 대용량 파일을 저장하기 위한 분산 확장 파일 시스템
 - 스트리밍 방식으로 데이터에 접근
@@ -132,9 +132,9 @@ last_modified_at: 2019-12-04T08:06:00-05:00
     - 파일 하나의 크기가 단일 디스크 용량보다 커질 수 있음
     - 스토리지 서브시스템 단순화
     - Fault tolerance, high-availability에 필요한 replication 구현에 적합
-
-![1575474248239](/assets/images/data_enginnering_study/hdfs.png)
-
+  
+  ![1575474248239](/assets/images/data_enginnering_study/hdfs.png)
+  
 - 네임 노드, 데이터 노드
   - HDFS는 마스터/슬레이브 구조로, 하나의 네임 노드와 여러개의 데이터 노드로 구성
   - 네임 노드(마스터)
@@ -164,117 +164,242 @@ last_modified_at: 2019-12-04T08:06:00-05:00
 11. 네임 노드는 파일로 저장된 네임스페이스 정보를 보조 네임 노드로 전송한다
 12. 네임스페이스 정보는 네임 노드를 복원할 때 사용할 수 있다.
 
-## MapReduce
+# MapReduce
 
-**병렬 처리 프로그래밍 모델**
+## 개요
 
-- 단계
-  - Split
-  - **Map**
-  - Combiner
-  - Partitioner
-  - Shuffle(sort)
-  - Sort
-  - **Reduce**
-  - Output
+- hadoop 클러스터의 데이터를 처리하기 위한 병렬 처리 프로그래밍 모델
+- MR 모델 단계
+  - Split : 전체 input data를 분할
+  - **Map** : 흩어져 있는(분할된) 데이터를 관련 있는 데이터끼리 묶어 임시 데이터 집합으로 변형 (분할된 데이터에 작업 수행)
+  - Combiner : 네트워크를 타고 넘어가는 데이터를 줄이기 위하 Map의 결과를 정리 (Local Reducer)
+  - Partitioner : Map의 출력 결과 키-값을 해쉬 처리하여 어떤 Reducer로 넘길지 결정
+  - Shuffle(sort) : Map 함수의 출력 데이터를  파티셔닝/정렬하여 디스크에 저장 후, Reducer로 이동
+    - 중간 단계의 키 값을 기준으로 조합(리스트 형태)하여 Reducer로 전송
+    - 중간 키와 연관되어 있는 모든 값은 같은 리듀서로 보내짐
+    - 중간 키와 리스트들은 키 순서대로 정렬(hash값이 같으면 같은 Reducer)되어 보내짐
+  - Sort : Reducer로 전달된 데이터를 키 값 기준으로 정렬
+  - **Reduce** : Map단계에서 얻은 임시 데이터 집합에서 중복 데이터를 제거하고, 원하는 데이터 추출(집계). 하나의 결과 생성
+  - Output : Reducer의 결과를 정의된 형태로 저장
 
-## Oozie
+![1575511021466](/assets/images/data_enginnering_study/mapreduce.png)
 
-- 여러 Job의 파이프라인을 만드는 시스템
+![1575511438047](/assets/images/data_enginnering_study/mapreduce2.png)
+
+![1575511452713](/assets/images/data_enginnering_study/mapreduce3.png)
+
+## 장단점
+
+- 장점
+  - 단순하고 사용이 편리하다
+    - Map, Reduce 두 개 함수로 병렬처리 구현
+  - 유연성
+    - 특정 데이터 모델에 의존하지 않아 비정형 데이터 모델 지원 가능
+  - 저장구조와 독립적
+    - HDFS 외에도 다양한 저장 구조 지원
+  - 내고장성
+    - 데이터 복제 기반의 데이터 내구성 지원
+    - task 장애 시 각 task 재수행
+      - map의 결과를 중간 저장한 데이터로 재수행하여 효율성을 높였음
+  - 높은 확장성. Scale-out
+- 단점
+  - 고정된 단일 데이터 흐름 
+    - 복잡한 알고리즘을 구현하기 위해서는 여러번 MapReduce를 수행해야 함
+  - 스키마, 인덱스, 고차원 언어 미지원
+    - 데이터 무결성 결여
+  - 단순한 스케줄링
+    - 노드 성능이 낮거나 상이한 경우, 같은 job이 여러번 수행되는 경우가 있음
+  - 낮은 성능
+    - 주기적인 디스크 I/O 발생으로 RDB와 비교해 성능이 낮음
+
+## 기능
+
+- 카운터 Counter
+  - Job에 대한 통계 정보 수집하는 채널로, 데이터 품질 통제나 app 수준의 통계 제공
+  - 문제 진단에 유용하게 사용
+    - 로그 출력을 일일이 확인하는 것보다 카운터 값 확인이 훨씬 수월하다
+  - 카운터 종류
+    - 내장 카운터 : Task 카운터, Job 카운터
+    - 사용자 정의 자바 카운터 : 자바 enum으로 정의한 카운터
+    - 사용자 정의 스트리밍 카운터
+- 정렬 Sort
+  - 부분 정렬
+    - MapReduce는 기본적으로 키를 기준으로 입력 레코드를 정렬함
+  - 전체 정렬
+    - 출력의 전체 순서를 고려하여 파티셔님하고, 파티션 내부 정렬
+    - 파티션 크기는 균등하도록 조정해야 효율이 높음
+      - 데이터 분포는 샘플링으로 판단
+  - 2차 정렬
+    - 부분/전체 정렬로 정렬되지 않는 키-값 정렬
+    - 원래 키와 원래 값으로 조합 키를 만들어 정렬하되, 파티셔닝과 그룹화는 원래 키만 고려
+- 조인 Join 
+  - map-side 조인
+    - 데이터가 map 함수에 도달하기 전에 수행
+    - 특정 키에 대한 모든 레코드는 동일한 파티션에 존재해야 함
+    - 동일한 리듀서 개수, 동일한 키, 분리되지 않는 출력 파일일 때 사용 가능
+  - Reduce-side 조인
+    - 특별한 제약 조건은 없으나, 조인될 데이터가 모두 셔플 단계를 거쳐야 하므로 비효율적
+
+## MapReduce Job
+
+- Job(Application) 
+
+  - 하둡 클라이언트가 수행하는 작업의 기본 단위로, Map task와 Reduce task로 나누어 실행
+
+- Job의 구성
+
+  - 입력 데이터
+  - 맵리듀스 프로그램
+  - 설정 정보
+
+- Map task
+
+  - MR job 입력은 input split(고정된 크기의 조각)으로 분리하며, hadoop은 각 split마다 map task를 생성하여 map함수로 처리
+    - map task의 적절한 split 크기는 HDFS 블록의 크기(단일 노드에 해당 블록이 모두 저장된다고 확신할 수 있는 입력 크기)
+    - split이 작으면 작업 부하가 분산되어 성능이 높아지나, 너무 작으면 map task를 위한 오버헤드가 증가하여 작업이 느려질 수 있음
+    - 일부 파일은 split되지 않고 처리해야 할 수 있음 (단일 map으로 처리)
+  - map task 결과는 로컬 디스크에 임시 저장하고, job이 끝나면 삭제 (속도 저하의 근본적 원인)
+  - hadoop은 HDFS내의 입력 데이터가 있는 노드에서 map task를 실행할 때 가장 빠르게 작동(데이터 지역성 최적화)
+    - 데이터 이동 네트워크 부하 최소화
+
+  ![1575514526398](/assets/images/data_enginnering_study/jobtask.png)
+
+- Reduce task
+
+  - 모든 Mapper의 출력 결과를 (네트워크를 통해) 입력으로 받으므로, 데이터 지역성의 장점은 없음
+  - Reduce의 결과는 안정성을 위해 HDFS에 저장
+  - Reduce task 수 지정 가능
+    - Reduce 개수 만큼 Map의 결과물을 분배하며, 동일한 키는 같은 Reducer에 전달(Shuffle)
+    - Reducer가 없을 수도 있음(Mapper only)
+    - 기본 값은 1개지만, 1보다 크게 설정하는 것이 좋음
+
+## MapReduce Job 실행
+
+- 클라이언트
+  - MapReduce Job 제출
+- Yarn 리소스 매니저
+  - 클러스터 상에 계산 리소스 할당 제어
+- Yarn 노드 매니저
+  - 클러스터의 각 머신(노드)에서 계산 컨테이너 시작하고 모니터링
+- App. 마스터
+  - job을 수행하는 각 task 제어
+- HDFS
+  - 다른 단계 간 Job 리소스 파일 공유
+
+![1575515338563](/assets/images/data_enginnering_study/hadoop.png)
+
+1. hadoop 클라이언트가 Resource Manager에게 어플리케이션을 제출한다
+2. Node Master를 통해 Application Master를 실행한다
+3. Application Master는 Resource manager에게 자신을 등록한다
+4. Application Master는 Resource manager를 통해 어플리케이션을 실행할 컨테이너 할당을 요청한다
+5. Application Master는 Node master에게 할당된 컨테이너를 실행하라고 요청한다
+6. 컨테이너에서 실행되는 어플리케이션은 상태정보를 Application Master에게 전송한다
+7. 클라이언트는 어플리케이션에서 실행상태 정보를 얻기 위해 Application master와 직접 통신한다
+8. 어플리케이션이 종료되면 Application Master는 Resource manager 자신을 제거하고 셧다운 된다
+
+## Oozie 
+
+- 종속 관계에 있는 여러 Job을 흐름에 따라 실행해 주는 시스템
+- Workflow 엔진과 Coordindator 엔진으로 구성
+  - Workflow
+    - 다른 형태의 Hadoop Job(MapReduce, HIve 등)을 구성하는 작업 흐름을 저장하고 실행
+  - Coordinator
+    - 미리 정의된 일정과 데이터 가용성을 바탕으로 Workflow job 실행
+- 쉽게 확장 가능하도록 설계되었으며, 시간 효율이 높음 (성공한 부분은 다시 실행하지 않음)
+# Yarn
+
+## 개요
+
+- Hadoop의 클러스터 관리 시스템으로, hadoop 2 버전에서 처음 도입
+
+- MapReduce 외 다른 분산 컴퓨팅 도구도 지원
+
+- 클러스터 자원을 요청하고 사용하기 위한 API 제공
+
+  - 사용자는 고수준 API를 작성하므로, 자원 관리의 자세한 내용은 알 수 없음
+
+- 클러스터 저장 계층(HDFS, HBase) 위에서 실행
+
+  ![1575516684617](/assets/images/data_enginnering_study/yarn.png)
+
+- Yarn 구성
+
+  - 리소스 매니저
+    - 클러스터 전체 사용량 관리(Scheduler - 자원 분배 규칙 설정). 노드 매니저, app. 마스터와 함께 동작
+  - 노드 매니저
+    - 클러스터 각 노드마다 실행되며, 컨테이너를 구동하고 모니터링
+  - App. 마스터
+    - app. 실행 및 관리를 담당하며, app. 마다 존재
+  - 컨테이너
+    - 클러스터 노드의 메모리, CPU코어, 디스크 등 물리적 자원
+
+- Yarn의 Application 수행 과정
+
+  - 클라이언트가 리소스 매니저에 접속해 app. 마스터 프로세스 구동 요청
+  - 리소스 매니저가 app. 마스터를 실행할 수 있는 노드 매니저를 찾음
+  - App. 마스터가 단순 계산을 하나의 컨테이너에서 수행하고 결과 반환 후 종료
+  - 리소스 매니저에 더 많은 클러스터(컨테이너) 자원을 요청 후 분산 처리 수행
+
+  ![1575516998202](/assets/images/data_enginnering_study/yarn2.png)
+
+- 자원 요청
+
+  - 유연한 자원 요청 모델
+    - 각 컨테이너에 필요한 컴퓨터 자원 용량(메모리, CPU) 외에도 지역성 제약(?) 표현 가능
+  - App. 실행 중에는 아무 때나 자원 요청 가능
+    - 처음에 모두 요청(spark)
+    - 동적으로 자우너 추가 요청(MapReduce)
+
+- app. 구분 : 사용자가 실행하는 Job 방식에 따라
+
+  - 사용자 Job 당 app. 하나 (MapReduce)
+  - Workflow나 사용자 Job Session 당 app. 하나 (Spark)
+  - 서로 다른 사용자들이 공유할 수 있는 장기 실행 app. (Impala)
+
+## Job Tracker / Task Tracker
+
+- Hadoop 1 버전에서 사용
+- JobTracker
+  - 태스크 관리로 시스템에서 실행되는 모든 Job 관리
+- TaskTracker
+  - 태스크를 실행하고 진행 상황을 JobTracker에 전송
+
+## Yarn 장점 (JobTracker 대비)
+
+- 확장성
+  - app. 마스터와 리소스 매니저를 분리하여 더 많은 노드와 태스크 관리 기능
+  - app. 마스터는 해당 app.이 실행될 때만 존재
+- 가용성
+  - Divide and Conquer (분할 후 정복)
+  - 리소스 매니저와 app. 마스터 모두에 고가용성 제공
+- 효율성
+  - 노드 매니저는 리소스 풀을 관리하기에 유동적으로 자원 할당 가능
+  - app. 은 필요한 만큼 자원 요청
+- 다중 사용자
+  - MapReduce 외 다양한 app. 수용 가능
+  - 다른 버전의 MapReduce 동시 실행 가능
+
+## Yarn Scheduler
+
+- 정해진 정책(규칙)에 따라 app. 에 자원 할당
+
+- 스케줄링 규칙은 사용자가 선택 가능
+
+- 스케줄링 옵션
+
+  ![1575517823217](/assets/images/data_enginnering_study/yarn3.png)
+
+  - FIFO
+    - app. 을 큐에 하나씩 넣고 제출된 순서에 따라 실행
+    - 이해하기 쉽고, 설정할 필요 없음
+    - 대형 app. 이 클러스터 자원을 모두 점유할 우려가 있어 공유 환경에서는 적합하지 않음 
+  - Capacity Scheduler
+    - 작은 job을 분리된 전용 큐에서 처리
+    - Job을 위한 자원을 미리 예약하는 방식으로 전체 클러스터의 효율성이 떨어짐
+  - Fair Scheduler
+    - 실행 중인 모든 Job의 자원을 동적으로 분배
+    - 대형 job이 실행되는 중에 작은 job이 들어오면 클러스터 자원을 작은 job에 할당
+    - 작은 job이 끝난 후에는 다시 큰 job이 전체 가용량 확보
+
   
-## Yarn
 
-**Yarn Scheduler** 중요하다
-- FIFO scheduler
-- Capacity scheduler
-- Fair Scheduler
-
-# Spark
-
-- 인메모리 분산 데이터 분석 시스템 (클러스터 컴퓨팅 프레임워크)
-- **RDD 데이터 타입(변하지 않는 데이터 셋)** : RAM을 ROM처럼 활용
-- MR 모델을 대화형 명령어 쿼리나 스트리밍, 머신 러닝이 가능하도록 확장
-- Scala 언어로 구현되어 있으며, 자바 가상 머신(JVM)으로 실행됨
-- **MapReduce 과정을 알아서 처리해 줌**
-
-## Spark Application 실행 구조
-
-- 드라이버
-  - 역할
-    - 사용자 프로그램을 태스크로 변환
-    - 익스큐터 태스크 스케줄링
-    - 스파크 app. 정보 관리
-- 익스큐터
-  - **주어진 Spark 작업의 개별 태스크들을 실행하는 작업 실행 프로세스**
-- 클러스터 매니저
-  - **드라이버 실행 관리**
-  - Spark에 붙이거나 뗄 수 있는 형태의 구성 요소
-  - 다양한 외부 매니저 자원
-- Spark Session과 언어 API
-  - 다양한 언어로 스파크 코드 실행 가능
-  - Spark Session은 익스큐터에 태스크를 전달하기 전에 JVM에서 실행할 수 있는 코드로 변환
-- Spark Application 실행 단계
-  1. 드라이버 위에 있는 사용자 코드가 RDD 논리 그래프 생성
-  2. 논리 그래프를 실행 계획(태스크)로 변환
-  3. 태스크 스케쥴링 및 실행
-
-## Spark 단점
-- 높은 메모리 요구
-- 연속적인 처리에 유리(간단한 분석의 경우 타 모델과 큰 차이 없음)
-- 딥 러닝의 경우(빠르기는 하지만) 실시간 처리 어려움
-  - Spark에서 GPU 프로그래밍은 아직 불가능.
-  - 딥러닝은 아직 GPU로 쓰고 있다
-- 불안정성(RAM의 처리로 데이터 유실 가능성)
-
-## RDD
-
-### RDD 연산
-
-- Transformation
-- Action
-
-> spark 2.0 버전부터는 RDD 연산을 직접 하는 경우가 드물다.
-
-- **Lazy-Excution(여유로운 실행)**
-  - **Lineage(계보)** : 동일 RDD를 생성하는 설계도 = RDD 관계도(그래프)
-
-
-## Spark management
-
-> 하둡의 리소스 관리와 유사하다.
-
-## Spark Components
-
-- DataFrame
-- DataSets
-- Spark ML
-  - 변환자 : 원시 데이터를 다양한 방식으로 변환하는 함수
-    - ex) One-hot-encoding
-  - 추정자
-    - 데이터 정규화(변환 초기화)
-    - 모델을 학습시키지 위해 사용하는 알고리즘
-    - ex) model fitting
-  - 평가기 : 모델 성능 테스트
-    - evaluation
-
-### Spark Streaming
-- **실시간 데이터 스트림 처리**
-  - 맵리듀스 속도가 100배 빨라졌기 때문에 가능해졌다
-- 마이크로배치 아키텍처
-
-### Structured Streaming
-- 데이터 스트림을 테이블로 표현
-- 모든 처리를 Table로 한다
-
-- 입력 테이블
-- 결과 테이블
-- Trigger : 데이터가 입력 테이블에서 처리되는 타이밍
-- 처리 모드
-
-### Spark GraphX
-
-그래프 처리를 위한 확장 RDD 제공
-- 노드(객체)와 간선(관계)
-  
-
-그래프 알고리즘과 그래프 빌더 포함
