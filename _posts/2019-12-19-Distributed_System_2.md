@@ -60,7 +60,7 @@ last_modified_at: 2019-12-18T08:06:00-05:00
 
 ## Storing and Retrieving Files
 
-![image-20191218205641260](/assets/image/distributed_system/how_hadoop_works_2.png)
+![image-20191218205641260](/assets/images/distributed_system/how_hadoop_works_2.png)
 
 ## HDFS NameNode Availability
 
