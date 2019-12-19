@@ -1,5 +1,5 @@
 ---
-title: "분산컴퓨팅(2)-HDFS :elephant:"
+title: "분산컴퓨팅(3)-MapReduce :elephant:"
 excerpt: "빅데이터분산컴퓨팅 강의 정리"
 
 categories:
@@ -7,89 +7,196 @@ categories:
 tags:
   - dataEnginnering
   - hadoop
-last_modified_at: 2019-12-18T08:06:00-05:00
+last_modified_at: 2019-12-19T08:06:00-05:00
 ---
 
 > 숭실대학교 박영택교수님의 "빅데이터분산컴퓨팅" 강의를 참고했습니다.
 
-# HDFS
+# MapReduce
 
-- HDFS는 Java로 작성된 파일 시스템
-  - 구글의 GFS 기반
-- 기존 파일 시스템의 상위에서 동작
-  - ext3, ext4, xfs
+- 여러 노드에 태스크를 분배하는 방법
+- 각 노드 프로세스 데이터는 해당 노드에 저장(가능한 경우)
+- 두 단계로 구성
+  - Map - Reduce
+  - Map 과 Reduce 사이에는 shuffle과 sort라는 스테이지가 있음
+- 각 Map task는 전체 데이터 셋에 대해서 별개의 부분에 대한 작업을 수행
+  - 기본적으로 하나의 HDFS block을 대상으로 수행
+  - 모든 Map task가 종료되면, MapReduce 시스템은 intermediate 데이터를 Reduce phase를 수행할 노드로 분산하여 전송
 
-## HDFS의 파일 저장 방식
+![image-20191219134242493](/assets/images/distributed_system/mapreduce1.png)
 
-- File은 block 단위로 분할
-  - 각 block은 기본적으로 64MB 또는 128MB 크기
-- 데이터가 로드될 때 여러 machine에 분산되어 저장됨
-  - 같은 file의 다른 block들은 서로 다른 machine에 저장됨
-  - 효율적인 MapReduce 처리가 가능
-- Block들은 여러 machine에 복제되어 `DataNode`에 저장됨
-  - 기본 replication은 3개
-    - 각 block은 서로 다른 3개의 replication이 저장되어 있다는 것을 의미
-- `NameNode`로 불리는 master node는 어떤 block들이 file을 구성하고 있고, 어느 위치에 저장되어 있는지에 대한 정보를 metadata로 관리
+## JobTracker
 
-![image-20191218204334177](/assets/images/distributed_system/how_hadoop_works_1.png)
+- 맵리듀스 Job들은 JobTracker라는 소프트웨어 데몬에 의해 제어됨
+- JobTracker는 'Master Node'에 있음
+  - 클라이언트는 맵리듀스 Job을 Job Tracker에게 보낸다
+  - JobTracker는 클러스터의 다른 노드들에게 맵과 리듀스 Task를 할당한다
+  - 이 노드들은 TaskTracker라는 소프트웨어 데몬에 의해 각각 실행된다
+  - TaskTracker는 실제로 맵 또는 리듀스 Task를 인스턴스화하고, 진행 상황을 JobTracker에게 보고할 책임이 있다.
 
-## HDFS
+### 용어
 
-- File이 block으로 분할될 때, file이 block크기보다 작은 경우에는 block 전체를 사용하지 않음
+- Job은 'Full Program'
+  - 데이터 집합을 통해 Mapper와 Reducer를 전체 실행
+- Task는 데이터 조각을 통해 하나의 맵퍼 또는 리듀서를 실행
+- Task attempt는 Task를 실행하기 위한 특정 인스턴스
+  - 적어도 Task가 있기 때문에 많은 Task attempt가 있을 것이다
+  - 만약 Task attempt가 실패하면, JobTracker에 의해서 다른 Task Attempt가 시작될 것이다
+  - Speculative execution(나중에 참조)는 완료된 Task들 보다 더 많은 Task를 시도할 수 있다.
 
-- Block들은 Hadoop Configuration에 설정된 디렉토리를 통해 저장됨
+## Mapper
 
-- NameNode의 metadata를 사용하지 않으면, HDFS에 접근 불가
+- 하둡은 네트워크 트래픽을 방지하기 위해, 메타 데이터의 일부분을 가지고 노드에서 처리한다
+  - 동시에 실행되는 여러 맵퍼는 각각 입력 데이터의 일부를 처리하는 단계를 포함한다
+- 맵퍼는 **Key / Value 쌍의 형태로 데이터**를 읽는다
+- 맵퍼의 0개 또는 그 이상의 Key / Value 쌍을 출력한다
+- 맵퍼는 입력값의 Key를 사용하기도 하지만, 완전히 무시하기도 한다
+  - ex. 표준 패턴은 한 번에 파일의 라인을 읽는다
+    - Key는 라인이 시작되는 파일에 Byte Offset이다.
+    - Value는 라인 자체의 내용이다
+    - 일반적으로 Key는 관련이 없는 것으로 간주한다
+- 맵퍼의 출력형태는 Key / Value 쌍이어야 한다.
 
-- 클라이언트 애플리케이션이 file에 접근하는 경우
-  - NameNode와 통신하여 file을 구성하고 있는 block들의 정보와 DataNode의 block의 위치 정보를 제공받음
-  - 이후 데이터를 읽기 위해 DataNode와 직접 통신
-  - NameNode는 bottleneck이 되지 않음
+### Upper Case Mapper
 
-## HDFS 접근 방법
+```pseudocode
+Let map(k, v) = 
+	emit(k.toUpper(), v.toUpper())
+```
 
-- Shell 커맨드 라인을 사용 : `$hadoop fs`
-- Java API
-- Ecosystem
-  - Flume
-    - network source로부터 데이터 수집
-  - Sqoop
-    - HDFS와 RDBMS 사이의 데이터 전송
-  - Hue
-    - Web기반의 interactive UI로 browse, upload, download, file view 등이 가능
+```
+('foo', 'bar') -> ('FOO', 'BAR')
+('foo', 'other') -> ('FOO', 'OTHER')
+('baz', 'more data') -> ('BAZ', 'MORE DATA')
+```
 
-## Storing and Retrieving Files
+### Explode Mapper
 
-![image-20191218205641260](/assets/image/distributed_system/how_hadoop_works_2.png)
+```pseudocode
+Let map(k, v) = 
+	foreach char c in v:
+		emit(k, c)
+```
 
-## HDFS NameNode Availability
+```
+('foo', 'bar') -> ('foo', 'b'), ('foo', 'a'), ('foo', 'r')
+```
 
-- `NameNode` deamon은 반드시 항상 실행되고 있어야 함
-  - 중단시 클러스터는 접근 불가능
-- High Availability mode
-  - 2개의 NameNode : Active와 Standby
-- Classic mode
-  - 1개의 NameNode
-  - 또 다른 'helper' node는 SecondaryNameNode
-    - backup 목적이 아니며, 장애 발생 시 NameNode를 대신할 수 없음
-    - NameNode를 복구할 수 있는 정보를 제공
+### Filter Mapper
 
-## Hadoop Server roles
+```pseudocode
+Let map(k, v) = 
+	if (isPrime(v)) then emit(k, v)
+```
 
-![image-20191218210327814](/assets/images/distributed_system/how_hadoop_works_3.png)
+```
+('foo', 7) -> ('foo', 7)
+('bar', 10) -> Nothing
+```
 
-## Hadoop의 구성 요소
+### Changing Keyspaces
 
-- Client
-  - NameNode를 통해 정보를 받고 이후 직접적으로 DataNode와 통신한다
-- NameNode
-  - 물리적으로 master node역할(Job Tracker, NameNode)을 하는 노드로서 DataNode에 대한 정보와 실행을 할 Task에 대한 관리를 담당
-- DataNode
-  - 물리적으로 Slave node역할(DataNode, Task Tracker)을 하는 노드로서, 실제로 데이터를 분산되어 가지고 있으며 Client에서 요청이 오면 데이터를 전달하고 담당 task를 수행하는 역할
-- 두 가지 관점
-  - Data Analytics 관점
-    - Job Tracker : 노드에 Task를 할당하는 역할과 모든 Task를 모니터링 하고 실패할 경우 Task를 재실행하는 역할
-    - Task Tracker : Task는 Map Task와 Reduce Task로 나눌 수 있으며 Task가 위치한 HDFS의 데이터를 사용하여 MapReduce 수행
-  - Data Storage 관점
-    - NameNode : HDFS의 파일 및 디렉토리에 대한 **metadata를 유지,** 클라이언트로부터 데이터 위치 요청이 오면 전달, 장비 손상 시 Secondary Node로 대체
-    - DataNode : 데이터를 HDFS의 Block 단위로 구성, Falut Recovery를 위해 default로 3 copy를 유지, Heartbeat 통하여 지속적으로 파일 위치 전달
+```pseudocode
+Let map(k, v) =
+	emit(v.length(), v)
+```
+
+```
+('foo', 'bar') -> (3, 'bar')
+```
+
+## Reducer
+
+- 맵 단계가 끝나면, 중간 단계의 키 값을 기반으로 중간 값(Intermediate Values)를 리스트 형태로 조합
+- 리스트를 리듀서로 전달
+  - 하나의 리듀서나 여러개의 리듀서가 존재할 것이다.
+    - Job 설정에서 정의되어  있다
+  - 중간 키와 연관되어 있는 모든 값은 같은 리듀서로 보내진다
+  - 중간 키와 그 값들의 리스트들은 키 순서대로 정렬되어 리듀서로 보내진다
+  - 이 단계는 'Shuffle'과 'Sort'
+- 리듀서의 output은 0이거나 key / value 의 쌍이다
+  - 이 결과들은 HDFS에 저장된다
+  - 실제로 리듀서는 보통 input 키에 대해서 하나의 key / value 쌍으로 배출되어 쓰여진다.
+
+### Sum Reducer
+
+```pseudocode
+let reduce(k, vals) =
+	sum = 0
+	foreach int i in vals:
+		sum += i
+	emit(k, sum)
+```
+
+```
+('bar', [9, 3, -17, 44]) -> ('bar', 39)
+```
+
+### Identity Reducer
+
+```pseudocode
+let reduce(k, vals) = 
+	foreach v in vals:
+		emit(k, v)
+```
+
+```
+('bar', [123, 100, 77]) -> ('bar', 123), ('bar', 100), ('bar', 77)
+```
+
+## 예제) Word Count
+
+```pseudocode
+let map(String input_key, String input_value) = 
+	foreach word w in input_value:
+		emit(w, 1)
+```
+
+```pseudocode
+let reduce(String output_key, Iterator<int> intermediate_vals) =
+	set count = 0
+	foreach v in intermediate_vals:
+		count += v
+	emit(output_key, count)
+```
+
+## Data Locality
+
+- 가능하면 언제든지 하둡은 노드의 map task가 자신의 HDFS 노드에 있는 데이터 블럭에서 동작하는지를 확인하려고 할 것이다.
+- 만약 불가능하다면 map task는 데이터를 가공하여 네트워크를 통하여 다른 노드로 데이터를 전달해야만 할 것이다
+- map task가 끝나자마자 데이터는 네트워크를 통하여 리듀서들로 전달된다
+  - 비록 리듀서들이 map task와 물리적으로 같은 머신에서 동작하더라도 리듀서들은 데이터 지역성을 알 수 있는 개념은 없다.
+  - 즉, map task가 자신의 머신에 존재하는 리듀서로 보낸다는 보장은 못 함
+  - 일반적으로 모든 mapper들은 모든 리듀서들과 통신해야 한다.
+
+## 병목현상
+
+> shuffle과 sort는 bottleneck인가?
+
+- 셔플과 정렬단계는 병목현상을 보인다
+  - reduce 함수는 맵퍼가 끝날 떄까지 리듀서가 시작할 수 없다.
+- 실제로, 일이 끝난 맵퍼들은 맵퍼에서 리듀서로 데이터를 옮기기 시작한다
+  - 마지막 맵퍼가 끝나면서 한번에 데이터를 이동시키는 병목현상을 완화한다
+  - 설정 가능하다. 맵퍼의 완료 퍼센트만큼 도달하면 리듀서로 데이터를 보내기 시작한다.
+  - `reduce` 함수는 모든 중간 데이터들의 이동과 정렬이 끝날 때 까지 시작하지 않는다.
+
+> 느린 mapper는 bottleneck인가?
+
+- 하나의 맵 태스크가 다른 태스크보다 느릴 수 있다.
+  - 머신의 성능이 좋지 못하는 등의 이유로
+  - 병목현상이 될 수 있다.
+- **Speculative excution** 사용하여 병목현상을 완화한다
+  - 매퍼가 다른 매퍼보다 심각하게 느리면 새로운 매퍼 인스턴스 생성하여 같은 데이터를 가지고 다른 머신에서 실행한다
+  - 느려진 작업을 끝내기 위해 첫번째 맵퍼들의 결과들을 사용할 수 있다
+  - 끝나지 않는 매퍼들은 kill할 수 있다.
+
+## 잡의 생성과 실행
+
+- 매퍼와 리듀서 클래스를 작성
+- 잡과 이를 클러스터에 등록하기 위한 설정을 하는 Driver클래스 작성
+- 매퍼, 리듀서, Driver 클래스 컴파일
+  - `javac -classpth <hadoop classpath> *.java`
+- 클래스 파일의 jar 파일 생성
+  - `jar cvf foo.jar *.class`
+- 하둡 클러스터에 잡을 생성
+  - `hadoop jar foo.jar Foo <in_dir> <out_dir>`
