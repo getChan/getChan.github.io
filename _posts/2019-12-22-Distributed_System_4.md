@@ -65,7 +65,7 @@ last_modified_at: 2019-12-22T08:06:00-05:00
 
 ## Architecture
 
-![image-20191222162115532](E:\getChan.github.io\assets\images\distributed_system\hive_1.png)
+![image-20191222162115532](/assets/images/distributed_system/hive_1.png)
 
 ## HiveQL
 
@@ -79,7 +79,7 @@ last_modified_at: 2019-12-22T08:06:00-05:00
 
 Hadoop 과 RDB 사이의 데이터 전송 툴
 
-![image-20191222163741052](E:\getChan.github.io\assets\images\distributed_system\hive_2.png)
+![image-20191222163741052](/assets/images/distributed_system/hive_2.png)
 
 
 
