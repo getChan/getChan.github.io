@@ -154,7 +154,7 @@ Hadoop 과 RDB 사이의 데이터 전송 툴
 > 2. 서비스를 재실행하는 cloudera 쉘 스크립트가 알 수 없는 에러가 남
 > 3. 쉘 스크립트 수정해서 일부 서비스 재실행 성공
 > 4. 하둡을 비정상적으로 종료해서 safe mode 진입함
-> 5. safe mode OFF
+> 5. [safe mode OFF](https://community.cloudera.com/t5/Support-Questions/safemode-Access-denied-for-user-cloudera-Superuser-privilege/td-p/2207)
 > 6. hadoop job이 실행되지 않음 (`The auxService:mapreduce_shuffle does not exist`)
 > 7. [yarn 설정파일 수정으로 해결](https://community.cloudera.com/t5/Support-Questions/I-run-a-Hadoop-job-but-it-got-stucked-and-nothing-is/td-p/47856/page/2)
 > 8. **Shuffle 단계에서 메모리 부족으로 process kill 됨** :sob:
