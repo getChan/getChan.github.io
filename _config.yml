@@ -108,7 +108,7 @@ analytics:
 author:
   name             : "남궁뎅"
   avatar           : "/assets/images/haha.png" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "어떻게 될지 모르는 개발 블로그"
+  bio              : "개발자 지망생이 공부하고 정리한 내용을 담고 있습니다. 질문이나 피드백 매우 감사합니다."
   location         : "South Korea"
   email            :
   links:
