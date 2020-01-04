@@ -11,7 +11,7 @@ tags:
 last_modified_at: 2020-01-03T08:06:00-05:00
 ---
 
-> 숭실대학교 박영택교수님의 "빅데이터분산컴퓨팅" 강의를 참고했습니다.\
+> 숭실대학교 박영택교수님의 "빅데이터분산컴퓨팅" 강의를 참고했습니다.
 >
 > 1. [하둡 개요](/data/Distributed_System_1/)
 > 2. [HDFS](/data/Distributed_System_2/)
@@ -31,7 +31,7 @@ last_modified_at: 2020-01-03T08:06:00-05:00
 
 # 텍스트 분석
 
-### 1 - 제품들에 대한 Ratings 수치 분석
+## 1 - 제품들에 대한 Ratings 수치 분석
 
 > - 사용자로부터 Comment 개수가 많고, 실제 제품도 만족한 제품
 > - Comment 개수는 많지만, 제품에 대한 만족도 낮은 제품
@@ -70,13 +70,13 @@ last_modified_at: 2020-01-03T08:06:00-05:00
   ORDER BY avg_rating DESC;
   ```
 
-### 2 - 가장 평가가 안좋은 제품에 대한 Comments 분석
+## 2 - 가장 평가가 안좋은 제품에 대한 Comments 분석
 
 > - 그 제품의 comments에서 가장 많이 나타난 문장 추출
 >   - 2-gram, 3-gram
 > - 가장 많이 나타난 문장들을 포함하고 있는 Comments 추출
 
-#### EXPLODE
+### EXPLODE
 
 - array의 각 element마다 하나의 record 생성
 
@@ -87,14 +87,14 @@ last_modified_at: 2020-01-03T08:06:00-05:00
   hive> SELECT people FROM example;
   Amy, Sam, Ted
   hive> SELECT SPLIT(people, ',') FROM example;
-  ["Amy", 'Sam', 'Ted']
+  ["Amy", "Sam", "Ted"]
   hive> SELECT EXPLODE(SPLIT(people, ',')) AS x FROM example;
   Amy
   Sam
   Ted
   ```
 
-#### N-grams
+### N-grams
 
 - Hive에서는 n-grams 를 계산하기 위한 NGRAMS 함수 제공
 - NGRAMS 함수는 3개의 파리미터 필요
@@ -104,19 +104,19 @@ last_modified_at: 2020-01-03T08:06:00-05:00
 - Output은 2개의 속성을 가진 STRUCT 구조의 array 리턴
   - `[{ngram: [...] , estfrequency: count}, ...]`
 
-#### Sentences를 Word로
+### Sentences를 Word로
 
-- SENTENCES`는 sentences를 array of words로 변환
+- `SENTENCES`는 sentences를 array of words로 변환
 
   ```sql
   hive> SELECT txt FROM phrases WHERE id=12345;
-  I bought this computer and really love it! It`s very fast...
+  I bought this computer and really love it! Its very fast...
   hive> SELECT SENTENCES(txt) FROM phrases WHERE id=12345
   [['I', "bought", ...],
    ["It's", "very", "fast", ...]]
   ```
 
-#### n-grams in Hive
+### n-grams in Hive
 
 - `NGRAMS` 함수는 `SENTENCES` 함수와 자주 함께 사용
 
