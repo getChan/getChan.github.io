@@ -4,8 +4,8 @@ main:
     url: https://getchan.github.io
   - title : "Categories"
     url : /categories/
-  - title : Web
-    url : categories/web/
+  - title : CS
+    url : categories/cs/
   - title : Data
     url : categories/data/
   - title : Algorithm
