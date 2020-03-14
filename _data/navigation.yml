@@ -1,9 +1,9 @@
 # main links
 main:
-  - title: "TIL"
-    url: /TIL/
   - title : "Categories"
     url : /categories/
+  - title: "TIL"
+    url: categories/TIL/
   - title : CS
     url : categories/cs/
   - title : Data
