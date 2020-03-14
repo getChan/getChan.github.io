@@ -106,9 +106,9 @@ analytics:
 
 # Site Author
 author:
-  name             : "남궁뎅"
+  name             : "빛날찬"
   avatar           : "/assets/images/haha.png" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "개발자 지망생이 공부하고 정리한 내용을 담고 있습니다. 질문이나 피드백 매우 감사합니다."
+  bio              : "은은히 빛나는 개발자.\n 질문이나 피드백 감사합니다."
   location         : "South Korea"
   email            :
   links:
