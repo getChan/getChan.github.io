@@ -125,7 +125,8 @@ PUT _template/nodejs
 {
   "index_patterns": "nodejs-*",
   "settings": {
-    "number_of_shards": 1
+    "number_of_shards": 1,
+    "index.lifecycle.name": "nodejs-history-ilm-policy"
   },
   "mappings": {
     "_meta": {
@@ -157,7 +158,6 @@ log를 parsing 할 파이프라인을 생성해야 한다. Rest API를 이용했
 ```json
 PUT _ingest/pipeline/nodejs-test-pipeline
 {
-  "description" : "describe pipeline",
   "description" : "Ingest pipeline created by file structure finder",
     "processors" : [
       {
@@ -275,6 +275,31 @@ setup.ilm.policy_name: "nodejs-history-ilm-policy"
 2020-03-22T00:44:08.962+0900	INFO	[index-management]	idxmgmt/std.go:295	Loaded index template.
 2020-03-22T00:44:08.962+0900	INFO	pipeline/output.go:105	Connection to backoff(elasticsearch(http://localhost:9200)) established
 ```
+
+# Filebeat Dockerize
+
+Filebeat의 복잡한 설치와 설정을 도커 이미지로 만들어서 배포하기 쉽게 해본다. 먼저 dockerfile을 작성 후
+
+```dockerfile
+FROM docker.elastic.co/beats/filebeat:7.6.1
+COPY filebeat.yml /usr/share/filebeat/filebeat.yml
+USER root
+RUN chown root:filebeat /usr/share/filebeat/filebeat.yml
+```
+
+`Dockerfile` 이 있는 폴더에 `filebeat.yml` 파일을 복사한 뒤 빌드해보자.
+
+```sh
+$ docker build --tag filebeat/nodejs:0.0.1 .
+```
+
+컨테이너에서 호스트 네트워크를 볼 수 있게 하고 로그 파일이 있는 경로를 마운트하면서 컨테이너를 실행해보자
+
+```sh
+$ sudo docker run --network host  -v /usr/local/var/log:/usr/local/var/log filebeat/nodejs:0.0.1
+```
+
+> mac 환경에서 `Mounts Denied...` 와 같은 에러가 뜬다면, docker desktop에서 setting-> file sharing탭에서 로그 저장 경로를 추가해주어야 한다.
 
 # Reference
 
