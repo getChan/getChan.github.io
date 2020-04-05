@@ -1,8 +1,8 @@
 ---
-title:  "EventEmmiter를 이용한 Node에서의 Observer패턴"
-excerpt: "nodejs에서의 observer 패턴"
+title:  "Nodejs 디자인 패턴(1)-Observer패턴"
+excerpt: "EventEmmiter를 이용한 Node에서의 Observer패턴"
 categories:
-  - TIL
+  - cs
 tags:
   - nodejs
   - design pattern
