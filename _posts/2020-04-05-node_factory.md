@@ -102,9 +102,92 @@ module.exports = function(label){
 
 조합이 가능한 특정 유형의 팩토리 함수를 말한다. 복잡한 클래스 계층 구조를 만들지 않고도 속성을 상속하는 객체를 만들 때 유용하다. 많은 자유를 제공하고 클래스의 관점보다는 동작의 관점에서 사고 할 수 있는 매커니즘이다. 대표적인 패키지로 [Stamp](https://medium.com/javascript-scene/introducing-the-stamp-specification-77f8911c2fee)가 있다.
 
+# 추상 팩토리 패턴
+
+**추상 팩토리 패턴**(Abstract factory pattern)은 다양한 구성 요소 별로 '[객체](https://ko.wikipedia.org/wiki/객체_(컴퓨터_과학))의 집합'을 생성해야 할 때 유용하다. 이 패턴을 사용하여 상황에 알맞은 객체를 생성할 수 있다.
+
+![Abstract factory UML.svg](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Abstract_factory_UML.svg/1920px-Abstract_factory_UML.svg.png)
+
+```python
+import enum
+from abc import *
+
+class Button:
+  @abstractmethod
+  def Paint(self):
+    pass
+
+class MousePointer:
+  @abstractmethod
+  def Paint(self):
+    pass
+
+class GUIFactory:
+  @abstactmethod
+  def CreateButton(self):
+    return Button
+  
+  @abstractmethod
+  def CreateMousePointer(self):
+    return MousePointer
+
+class WinFactory(GUIFactory):
+  def CreateButton(self):
+    return WinButton()
+  def CreateMousePointer(self):
+    return WinMousePointer()
+  
+class OSXFactory(GUIFactory):
+  def CreateButton(self):
+    return OSXButton()
+  def CreateMousePointer(self):
+    return OSXMousePointer()
+ 
+class WinMousePointer(MousePointer):
+  def Paint(self):
+    print("Render a mousepointer in a Windows style")
+
+class OSXMousePointer(MousePointer):
+  def Paint(self):
+    print ("Render a mousepointer in a OSX style")
+
+class WinButton(Button):
+  def Paint(self):
+    print ("Render a button in a Windows style")
+    
+class OSXButton(Button):
+    def Paint(self):
+        print ("Render a button in a Mac OSX style")
+
+class Settings:
+  @staticmethod
+  def Default():
+    return Appearance.WIN
+  
+class Apperance(enum.Enum):
+  WIN = 0
+  OSX = 1
+
+def main():
+  appearance = Settings.Default()
+  if apperance == Appearance.WIN:
+    factory = WinFactory()
+  elif appearance == Appearance.OSX:
+    factory = OSXFactory()
+  button = factory.CreateButton()
+  mousePointer = factory.CreateMousePointer()
+  button.Paint()
+  mousePointer.Paint()
+
+if __name__ == '__main__':
+  main()
+```
+
+
+
 # Reference
 
 책 *<Node.js 디자인 패턴>,  Mario Casciaro*
 
-
+[위키백과](https://ko.wikipedia.org/wiki/추상_팩토리_패턴)
 
