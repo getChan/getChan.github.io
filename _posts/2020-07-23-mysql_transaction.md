@@ -2,7 +2,7 @@
 title: "MySQL 트랜잭션"
 excerpt: "mysql 트랜잭션 개념과 트랜잭션 격리 수준"
 categories:
-  - TIL
+  - data
 tags:
   - database
   - mysql

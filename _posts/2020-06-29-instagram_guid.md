@@ -2,7 +2,7 @@
 title: "Sharding & IDs at Instagram(번역)"
 excerpt: "인스타그램에서 DB guid를 생성하는 방법"
 categories:
-  - TIL
+  - data
 tags:
   - database
   - guid

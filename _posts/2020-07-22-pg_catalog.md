@@ -2,7 +2,7 @@
 title: "PostgreSQL `pg_catalog`"
 excerpt: "시스템 카탈로그로 db 메타데이터 조회하기"
 categories:
-  - TIL
+  - data
 tags:
   - database
   - postgresql

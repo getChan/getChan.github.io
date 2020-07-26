@@ -2,7 +2,7 @@
 title: "MySQL`LOAD DATA`"
 excerpt: "LOAD DATA로 적재하기"
 categories:
-  - TIL
+  - data
 tags:
   - database
   - ETL
