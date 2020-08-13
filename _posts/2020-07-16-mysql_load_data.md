@@ -1,5 +1,5 @@
 ---
-title: "MySQL`LOAD DATA`"
+title: "MySQL `LOAD DATA`"
 excerpt: "LOAD DATA로 적재하기"
 categories:
   - data
