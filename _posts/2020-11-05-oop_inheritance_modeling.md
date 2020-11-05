@@ -212,7 +212,105 @@ public class Clock {
 
 > **+** 클래스 내부의 상태는 항상 유효한 상태를 유지해야 한다. `setter`에서 유효하지 않은 상태인지 검사한 뒤 항상 유효한 상태로만 만들어야 한다.
 
+# 디지털 벽시계 모델링
 
+- 아날로그 시계와 공통되는 부분은 부모 클래스로
+- 차이점은 부모 클래스를 상속받은 새 클래스로
+
+## 차이점
+1. 오전/오후 구분 및 출력
+2. 시간 맞추는 방식
+3. 7세그먼트 디스플레이를 이용한 시간 출력
+
+## 오전/오후 구분하기
+
+```java
+public class DigitalClock extends Clock {
+    public boolean isBeforeMidday() {
+        return (super.seconds / (DAY_IN_SECONDS / 2) == 0);
+    }
+}
+```
+
+## 디지털 벽시계 시간 맞추기
+
+시/분/초를 따로 설정한다
+1. 시/분/초 별로 1씩 증가
+2. 숫자를 직접 입력
+
+## 7세그먼트 디스플레이
+
+각 선분의 on/off 여부를 저장하는 방법
+1. 불리언 요소를 7개 가진 배열
+2. 비트 플래그
+   - `enum`과 `EnumSet` 이용
+3. `SevenSegmentDisplay` 클래스
+   - 불리언 배열 / 비트 플래그 모두 가능
+
+```java
+public class DigitalClock extends Clock {
+    public boolean isBeforeMidday() {
+        return (super.seconds / (DAY_IN_SECONDS / 2) == 0);
+    }
+
+    public SevenSegmentDisplay[] getHourDisplay() {
+        return convertToTwoDigitDisplay(getHours());
+    }
+
+    private SevenSegmentDisplay[] convertToTwoDigitDisplay(byte number) {
+        SevenSegmentDisplay[] displays = new SevenSegmentDisplay[2];
+
+        for (int i = 1; i >= 0; --i) {
+            byte digit = (byte) (number % 10);
+            displays[i] = new SevenSegmentDisplay(digit);
+            number /= 10;
+        }
+        return displays;
+    }
+}
+```
+
+> 상속 모델링을 할 때는 자식 클래스를 먼저 설계한 뒤 자식 클래스들을 공통점을 토대로 부모 클래스를 설계하도록 하자.
+
+# 다중 상속
+
+손목시계를 모델링한다고 하면, 어떤 클래스를 상속받아야 할까?
+- 손목시계가 디지털이라면? 아날로그라면?
+  - 벽시계, 손목시계마다 따로따로 클래스를 생성?
+    - **중복 발생**
+
+자바는 다중상속을 지원하지 않는다.
+- 잘못 사용하면 매우 복잡해짐
+  - 최상위 부모를 여러번 상속..
+
+자바에서는 상속만으로 이러한 문제를 해결하기 까다롭다.
+
+## 다중 상속이 생기는 이유
+
+**전혀 다른 양상의 특징을 상속받으려 함**
+- 최상위 부모 : 시간을 기록하는 기능
+- 아날로그 vs 디지털 : 현재 시간을 '어떻게' 표현하는가
+- 벽시계 vs 손목시계 : 시계를 '어디에' 장착하는가
+
+## 해결 방법
+1. `wear()`와 `mount()`를 추상화
+   - 둘 다 어딘가에 **붙이는** 개념
+   - `attach()` 메서드로 합치자
+2. 인터페이스
+   - 곧 배운다.
+
+# 깊은 상속의 어려움
+
+- 1단계 상속
+  - 여러 클래스로부터 공통 부분을 뽑아내 일반화/추상화
+- 2단계 상속
+  - 이미 일반화시킨 것에서 다시 공통 부분을 뽑아내 일반화/추상화
+- n단계 상속
+  - 2단계 반복
+
+**상속 단계가 증가할수록 추상화 능력이 더 필요**
+- 인간에게 익숙한 방법이 아님
+- 추상화가 깊어지면 실체를 찾기 어려워 실수할 가능성 증가
 
 # Reference
 [POCU 강의](https://pocu.academy/ko/Courses/COMP2500)
