@@ -1,5 +1,5 @@
 ---
-title: "객체지향 프로그래밍과 설계(6) - 상속"
+title: "객체지향 프로그래밍과 설계(6)"
 excerpt: "상속"
 categories:
   - cs
