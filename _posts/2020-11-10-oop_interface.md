@@ -115,6 +115,50 @@ public final class ConsoleLogger implements ILoggable, ISavable {
 
 **핵심은 다형성**
 
+# `Object.clone()`
+```java
+protected Object clone() throws CloneNotSupportedException
+```
+- 클래스형은 객체의 상태를 복사하지 않음
+- 복사를 원할 경우 `clone()` 메서드를 구현하면 됨
+  - `Cloneable` 인터페이스를 상속 후 구현
+  - 그냥 object의 clone()을 오버라이딩하는 것이 아님
+  - `CloneNotSupportedException`이 있는 이유
+    - Clonable 인터페이스를 상속받지 않고 오버라이딩하면 이 예외 발생
+
+```java
+public final class Robot implements Cloneable {
+  private int hp;
+
+  public Robot(int initialHp) {
+    this.hp = initialHp;
+  }
+
+  public Obejct clone() throws CloneNotSupportedException {
+    return super.clone();
+  }
+}
+```
+- Object는 실제 자식 객체의 객체를 만들고 모든 멤버를 대입해서 반환
+- 즉, **얕은 복사**
+
+## 주의점 
+- Object를 반환하기에 캐스팅 필요
+- 주소가 달라졌기에 `==`는 True가 되지 않음
+
+# 구체 클래스 vs 인터페이스
+구체 클래스
+- 상태와 동작을 모두 포함
+- 동작에 다양한 접근권한 부여 가능
+- 객체 생성 가능
+- 다중 상속의 부모가 될 수 없음
+
+인터페이스
+- 동작에 대한 설명만 포함
+- 모든 동작은 `public`
+- 객체 생성 불가능
+- 다중 상속의 부모 될 수 있음
+
 # Reference
 [POCU 강의](https://pocu.academy/ko/Courses/COMP2500)
 
