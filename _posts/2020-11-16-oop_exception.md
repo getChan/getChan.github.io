@@ -124,6 +124,115 @@ public void WriteFile(String relativePath) {
 - rethrow는 좋은 습관이 아님
 - **해야 한다면 호출 스택을 유지하면서 던질 것!**
 
+# 커스텀 예외 만들기
+
+```java
+public final class UserNotFoundException extends RuntimeException {
+  public UserNotFoundException() {
+    super();
+  }
+
+  public UserNotFoundException(String message) {
+    super(message);
+  }
+
+  public UserNotFoundException(String message, Throwable cause) {
+    super(message, cause);
+  }
+}
+```
+`RuntimeException`의 생성자
+
+- 자식 클래스들의 생성자에서 반드시 `super()`를 호출해야 함
+- 호출 안 할 경우 message, cause가 저장되지 않음
+- message는 `getMessage()`로 확인 가능
+- cause는 `getCause()`로 확인 가능
+
+# Java의 예외
+
+## 예외 처리(catch)를 하지 않으면?
+
+`main()` 메서드에서까지 아무런 처리를 안 해주면 JVM이 오류 메시지를 보여주고 프로그램을 중단시킴
+- OS나 기계에는 아무 영향 없음
+
+### 근래의 하드웨어 / OS
+- 여러 프로그램이 동시에 실행됨
+- 따라서 각 프로그램마다 별도의 메모리 공간(가상 메모리)를 제공
+
+1. CPU에서 0으로 나누려 함
+2. CPU의 ALU는 0으로 나누는 연산이 불가능
+3. CPU등에서 문제가 있다는 인터럽트나 시그널 등을 보내줌
+   - 처리 안 해주면 프로그램이 크래시 날 수 있음
+4. OS가 상황을 캐치한 뒤, 프로그램을 종료하고 가상 메모리를 해제
+   - 외부 리소스에 영향을 미치지 않음
+
+> JVM이 보장해주던 안전성을 OS가 책임져준다
+
+### 예외 처리가 힘든 이유
+
+함수가 더이상 블랙박스가 아니게 됨
+- 어느 함수에서 어떤 예외를 던지는지 찾기 힘듬
+- 알려면 모든 함수의 속을 다 보며 확인해야 함
+- 여러 단계에 걸쳐 함수 호출 수 확인해야 함수는 수천개..
+
+> 캡슐화가 어렵다!
+
+## Java의 두 가지 예외
+
+### checked 예외
+- 컴파일러가 예외 처리를 제대로 하는지 확인해 줌
+- 어느 메서드가 어떤 예외를 던지는지 명확히 알 수 있음
+- 예외가 발생하는 코드에서 이 둘 중 하나를 안 하면 컴파일 오류
+  - 발생한 예외를 그 메서드 안에서 처리 (`catch` 블록)
+  - 처리를 안 할 경우 그 사실을 메서드 시그니처 옆에 표기
+    - 이 메서드의 호출자가 다시 이 둘중에 하나를 해야 함
+- `Exception`을 상속받는 예외들(`RuntimeException` 제외)
+
+```java
+public User findUser(String username) throws UserNotFoundException {
+  ...
+
+  throw new UserNotFoundException(username);
+}
+```
+- 다음 메서드의 시그니처 옆에 반드시 추가해야 함
+  - checked 예외를 던지는 메서드
+  - 다른 메서드에서 발생한 checked 예외를 처리하지 않는 메서드
+- 추가 안 하면 컴파일 오류!
+
+main 메서드에서도 catch안 하고 throws하면?
+- JVM에서 에러를 발생시킴
+
+### unchecked 예외
+- 어디서 어떤 예외가 나는지 한눈에 안 보임
+- `RuntimeException`을 상속받는 예외들
+- 컴파일러가 따로 검사를 안 해줘서 unchecked 에외
+
+checked 예외는 왜 있을까
+- API 제작자가 이건 클라이언트가 반드시 처리해야 할 예외라고 알려주는 용도
+
+예외로부터 안전한 프로그래밍 *exception-safe*
+- 복잡해질수록 너무 어려워짐
+- 모든 곳에서 예외로부터 안전한 프로그래밍은 매우 힘들다..
+
+## 근래의 예외처리 트렌드
+1. 그냥 unchecked 예외를 쓰자고 함
+   - 다른 언어와 똑같아짐
+   - 여전히 누가 어떤 예외를 던지는지 한눈에 안 보임
+2. 예외로부터 안전한 최선의 방법은 재부팅
+   - 예외로부터 회복하지 않는다
+   - 단, 디버깅에 필요한 정보를 최대한 남기고 프로그램 종료
+
+> 모든 예외를 한번에 "처리"하자!
+>
+> Exception으로 한번에 잡자!
+
+- 주로 main() 함수에서 한 번만!
+- 다시 예외를 던지는 일(rethrow) 훨씬 적어짐
+- 여전히 던질 때는 세세한 예외 형을 던짐(커스텀 예외 포함)
+- `catch`를 Exception으로 한방에 할 뿐
+
+
 # Reference
 [POCU 강의](https://pocu.academy/ko/Courses/COMP2500)
 
