@@ -318,9 +318,152 @@ reader.writeTo(builder);
 
 String markdown = builder.toMarkdownText();
 ```
-
 - 다형적인 함수 호출이 아님
 - 실제 빌더 객체의 레퍼런스를 들고 있기에 가능하다.
+
+# 래퍼 패턴
+- **어떤 클래스의 메서드 시그니처가 맘에 안 들 때 다른 걸로 바꾸는 방법**
+- 단, 그 클래스의 메서드 시그니처를 직접 변경하지 않음
+  - 그 클래스의 소스코드가 없을 수도 있음
+  - 그 클래스에 의존하는 다른 코드가 있을 수도 있음
+- 대신 새로운 클래스를 만들어 기존 클래스를 감싼다.
+
+## 메서드 시그니처를 바꾸려는 이유
+1. 추후 외부 라이브러리를 바꿀 때 클라이언트 코드를 변경하지 않기 위해
+2. 그냥 사용 중인 메서드가 코딩 표준에 맞지 않아서
+3. 기존 클래스에 없는 기능을 추가하기 위해
+4. 확장된 용도 : 내부 객체를 클라이언트에게 노출시키지 않기 위해
+   - DTO (Data Transfer Object) 만들기
+
+## 그래픽 API 예제
+```java
+clearScreen(float, float, float, float) // OpenGL
+clear(int, int, int, int) // DirectX
+```
+- 둘 다 화면을 어떤 색상으로 지우는 메서드
+- 다른 점
+  1. 메서드 이름
+  2. r, g, b, a 매개변수의 형과 유효한 범위
+
+```java
+public final class Graphics {
+    private OpenGL gl;
+    ...
+    public void clear(float r, float g, float b, float a) {
+        this.gl.clearScreen(a, r, g, b);
+    }
+}
+```
+
+클라이언트는 래퍼 클래스만 사용
+```java
+Graphics graphics;
+this.graphics.clear(0.f, 0.f, 0.f, 1.f);
+this.graphics.clear(1.f, 0.f, 0.f, 1.f);
+// 어떤 graphic을 사용하는지 알 필요 없음
+```
+
+`Graphics` 메서드들이 directX를 사용하도록 변경
+```java
+public final class Graphics {
+    private DirectX dx;
+    ...
+    public void clear(float r, float g, float b, float a) {
+        this.dx.clear((int) (r * 255), (int) (g * 255), (int) (b * 255), (int) (a * 255));
+    }
+}
+```
+
+## DTO
+- DB에 저장된 데이터를 읽어 웹페이지에 보여주는 시스템
+- `PersonEntity`를 웹 브라우저에 반환하면?
+  - 필요 이상의 데이터를 반환
+  - 민감정보도 포함되어 있음
+
+**데이터 전송에만 사용하는 객체를 DTO라 함**
+- `PersonEntity`를 `PersonDto`로 변환하는 메서드만 만들면 됨
+
+```java
+public final class PersonEntity {
+    public UUID id;
+    public Stirng fullName;
+    public String email;
+    public String passwordHash;
+    public Date createdDateTime;
+
+    public PersonDto toDto() {
+        return new PersonDto(this.fullName, this.email, this.createdDateTime);
+    }
+}
+```
+
+엄밀하게는 래퍼 패턴은 아님
+- 궁극적인 목표는 비슷
+- DTO는 타 클래스의 데이터를 내 필요에 맞게 바꾸는 것
+
+# 프록시 패턴
+> 프록시 서버란 실제 웹사이트와 사용자 사이에 위치하는 중간 서버
+> 
+> 인터넷상의 캐시 메모리처럼 작동함
+> - 사용자는 프록시 서버를 통해 원하는 문서를 읽으려 함
+> - 프록시 서버에 이미 그 문서가 저장되어 있다면 그걸 반환
+> - 없다면 실제 웹서버에서 문서를 읽어와 프록시 서버에 저장
+
+목적
+- 클래스 안에서 어떤 상태를 유지하는 게 여의치 않은 경우
+  - 데이터가 너무 커서 미리 읽어 두면 메모리 부족
+  - 객체 생성 시 데이터를 로딩하면 시간이 꽤 걸림
+  - 객체는 만들었으나 그 속의 데이터를 사용하지 않을 수도 있음
+- 이럴 경우 붋필요한 데이터 로딩을 방지
+  - 객체 생성 시에는 데이터 로딩에 필요한 정보만(ex. 파일 위치) 기억해 둠
+  - 클라이언트가 실제로 데이터를 요청할 때 메모리에 로딩
+
+## 예시 : 이미지 데이터
+
+이미지는 용량이 크고, 저장장치에서 읽어와야 한다.
+
+```java
+public final class Image {
+    private ImageData image;
+    
+    public Image(String filePath) {
+        this.image = ImageLoader.getInstance().load(filePath);
+        // 프록시 패턴 사용 X, 즉시 로딩
+    }
+
+    public void draw(Canvas canvas, float x, float y) {
+        canvas.draw(this.image, x, y);
+    }
+}
+```
+
+문제점
+- 생성자에서 무조건 이미지를 읽어 옴
+- 메모리를 많이 사용
+- 이미지를 읽어오는 데 시간도 걸림
+- 모든 image에 대해 draw()가 호출되지 않을 수도 있음
+
+프록시 패턴을 적용
+```java
+public final class Image {
+    private String filePath;
+    private ImageData image;
+    
+    public Image(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void draw(Canvas canvas, float x, float y) {
+        if (this.image == null) {
+            this.image = ImageLoader.getInstance().load(this.filePath);
+            // 지연 로딩
+        }
+        canvas.draw(this.image, x, y);
+        // 이미 메모리에 로딩해 놓았으면 그대로 갖다 쓴다.
+    }
+}
+```
+
 
 # Reference
 [POCU 강의](https://pocu.academy/ko/Courses/COMP2500)
