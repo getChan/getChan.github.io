@@ -1,6 +1,6 @@
 ---
-title: "객체지향 프로그래밍과 설계(16)"
-excerpt: "SOLID 설계 정신"
+title: "객체지향 프로그래밍과 설계(15)"
+excerpt: "디자인 패턴"
 categories:
   - cs
 tags:
@@ -463,6 +463,210 @@ public final class Image {
     }
 }
 ```
+
+## 즉시 로딩 vs 지연 로딩
+
+어느 방법에도 장단점이 있다.
+
+|                      | 즉시 로딩 | 지연 로딩 + 캐시 X   | 지연 로딩 + 캐시<br />(프록시 패턴) |
+| -------------------- | --------- | -------------------- | ----------------------------------- |
+| **최신 데이터**      | X         | O                    | △                                   |
+| **메모리 사용량**    | 최고      | 최소                 | 그 중간 어딘가                      |
+| **실행 속도 병목점** | 생성 시   | 이미지 사용할 때마다 | 알기 힘듦                           |
+
+## 요즘의 프록시 패턴
+
+- 요즘 컴퓨터에는 메모리를 많이 장착
+  - 미리 다 로딩해놔도 큰 문제가 아닌 경우도 많음
+- 한 번에 그리는 이미지 수가 많지 않다면?
+  - 필요할 때마다 디스크에서 읽을 수 있음 (충분히 빠름! SSD!)
+- 하지만 인터넷에서 그 이미지들을 로딩한다면?
+  - 예전에 디스크에서 읽을 때보다 시간이 더 오래 걸림
+  - 그 동안 프로그램이 멈춰 있다면 사용자가 좋아할까?
+
+## 프록시 패턴 + 캡슐화의 문제
+
+- 클라이언트는 언제 이 클래스가 느려지는지 알 수가 없다
+- 세 가지 방법 중 정확히 어떻게 구현되어 있는지 알 수 없기 때문
+  - 세 구현 방법 모두 Image 클랙스 안에 캡슐화되어 있음
+
+> 요즘 세상에는 클래스가 남몰래 프록시 패턴을 사용하는 것보다 클라이언트에게 조작 권한을 주는 게 좋을 수도 있다.
+
+```java
+public final class Image {
+    private String filePath;
+    private ImageData image;
+    
+    public Image(String filePath) {
+        this.filePath = filePath;
+    }
+
+  	public boolean isLoaded() {
+ 	     return this.image != null;
+    }
+  
+  	public void load() {
+      	if (this.image == null) {
+          	this.image = ImageLoader.getInstance().load(this.filePath);
+        }
+    }
+  	public void unload() {
+      	this.image = null;
+    }
+  
+    public void draw(Canvas canvas, float x, float y) {
+        canvas.draw(this.image, x, y);
+    }
+}
+```
+
+- 이미지의 로딩 상태를 클라이언트가 명확히 알 수 있게 해 줌
+- 클라이언트가 로딩과 언로딩 시점을 직접 제어할 수 있게 해 줌
+- 이를 이용해 게임이나 앱에서 봤던 로딩 스크린을 보여줄 수 있음
+  - 모든 이미지를 다 읽어올 때까지
+  - 상태 머신(state machine) 을 사용
+
+```java
+public class LoadingScreen extends Screen {
+  	ArrayList<Image> requiredImages;
+  
+  	public void update() {
+      	if (this.requiredImages.size() == 0) { // 로딩이 끝
+          	StateManager.getInstance().pop(this); // 상태 머신에서 빼줘
+          	return;
+        }
+      
+      	Image image = this.requiredImage.get(0);
+      	if (image.isLoaded()) {
+          	this.requiredImages.remove(0);
+        } else {
+          	image.load();
+        }
+      
+      	drawScreen();
+    }
+}
+```
+
+# 책임 연쇄 패턴과 Logger
+
+## 대표적인 케이스 && 잘못된 예
+
+```java
+public abstract class Logger {
+  	private EnumSet<Loglevel> loglevels;
+  	private Logger next;
+  
+  	public Logger(LogLevel[] levels) {
+      	this.logLevels = EnumSet.copyOf()
+    }
+  
+  	public Logger setNext(Logger next) {
+      	this.next = next;
+      	return this.next; // 클래스 외부에서 반환되는 값을 예측하기 어렵다.
+    }
+  
+  	public final void message(String msg, LogLevel severity) {
+      	if (logLevels.contans(severity)) {
+          	log(msg);
+        }
+      	
+      	if (this.next != null) {
+          	this.next.message(msg, severity); // 연쇄적으로 로커를 호출
+        }
+    }
+  
+  	protected abstract void log(String msg);
+}
+```
+
+```java
+public class ConsoleLogger extends Logger {
+  	public ConsoleLogger(LogLevel[] levels) {
+      	super(levels);
+    }
+  
+  	@override
+  	protected void log(String msg) {
+      	System.err.println("Writing to Console: " + msg);
+    }
+}
+```
+
+```java
+Logger logger = new ConsoleLogger(LogLevel.all());
+logger.setNext(new EmailLogger(new LogLevel[]{LogLevel.FUNTIONAL_MESSSAGE, LogLevel.FUNCTIONAL_ERROR}))
+  		.setNext(new FileLogger(new Loglevel[]{LogLevel.WARNING, LogLevel.ERROR}));
+
+// consoleLogger에서 처리
+logger.message("Entering function ProcessOrder().", LogLevel.DEBUG);
+
+// consoleLogger + emailLogger에서 처리
+logger.message("Order Dispatched", LogLevel.FUNCTIONAL_MESSAGE);
+
+// consoleLogger + fileLogger에서 처리
+logger.message("Customer Address etails missing in Branch DataBase", LogLevel.WARNING);
+
+```
+
+- **`logger`를 한 번만 호출한다.**
+- 연쇄적으로 로거를 호출한다.
+
+## 보다 직관적인 방법
+
+```java
+public final class LogManager {
+  	private static LogManager instance;
+  	
+  	private ArrayList<Logger> loggers = new ArrayList<Logger>();
+  	
+  	public static LogManager getInstance() {
+      	if (instance == null) {
+          	instance = new LogManager();
+        }
+      
+      	return instance;
+    }
+  
+  	public void addHandler(Logger logger) {
+      	this.loggers.add(logger);
+    }
+  
+  	public void message(String msg, LogLevel severity) {
+      	for (Logger logger : this.loggers) {
+          	logger.message(msg, severity)
+        }
+    }
+}
+```
+
+```java
+public abstract class Logger {
+  	private EnumSet<LogLevel> logLevels;
+  
+  	public Logger(LogLevel[] levels) {
+      	this.logLevels = EnumSet.copyOf(Arrays.asList(levels));
+    }
+  
+  	public final void message(String msg, LogLevel severity) {
+      	if (logLevels.contains(severity)) {
+          	log(msg);
+        }
+      	// 연쇄 호출 필요 없음
+    }
+  	
+  	protected abstract void log(String msg);
+}
+// 상속하는 로거들은 변경 X
+```
+
+## 올바른 책임 연쇄 패턴
+
+- 어떤 메세지를 처리할 수 있는 여러 객체가 있음
+- 이 객체들은 차례대로 메세지를 처리할 수 있는 기회를 받음
+- 만약 그 중 한 객체가 메시지를 처리하면 그것에 대한 **책임**을 짐
+  - 즉, 다음 객체는 메시지를 처리할 기회를 받지 못 함
+- 이래서 책임 연쇄란 이름이 붙은 것!`
 
 
 # Reference
