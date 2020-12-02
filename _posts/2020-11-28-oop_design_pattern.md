@@ -668,6 +668,109 @@ public abstract class Logger {
   - 즉, 다음 객체는 메시지를 처리할 기회를 받지 못 함
 - 이래서 책임 연쇄란 이름이 붙은 것!`
 
+# 옵저버 / Pub-Sub 패턴
+
+- Pub :  publisher
+- Sub : subscriber
+- 옵저버와 유사하나 엄밀히 말하면 다른 패턴
+
+이전에 봤던 `LogManager` 가 pub-sub 패턴
+
+- ConsoleLogger, EmailLogger 등을 LogManager에 추가
+- 프로그램에서 LogManager에게 로그 메세지를 보냄
+  - 프로그램이 publisher
+- 그 로그 메세지를 처리하게 등록된 구독자들에 전부 메시지가 감
+- 여기서 LogManager를 빼면 그게 옵저버 패턴
+
+## 옵저버 패턴 예 : 크라우드펀딩
+
+- 돈이 들어올 때마다 두 객체를 업데이트하고 싶음
+  - 장부를 업데이트 (상태는 금액만 필요)
+  - 모바일 폰에서 노티를 받음 (상태는 이름과 금액이 필요)
+
+```java
+public interface IFundingCallback {
+  	void onMoneyRaised(String backer, int amount);
+}
+
+public final class BookkeepingApp implements IFundingCallback {
+  	// 멤버 변수와 메서드는 모두 생략
+  	@Override
+  	public void onMoneyRaised(String backer, int amount) {
+      	// 장부에 새 내역 추가
+      	// amount만 사용
+    }
+}
+
+public final class MobileApp implements IFundingCallback {
+  	@Override
+  	public void onMoneyRaised(String backer, int amount) {
+      	// 모바일 앱에 알림을 보여준다.
+      	// backer, amount 모두 사용
+    }
+}
+```
+
+```java
+public final class CrowdFundingAccount { // 발행자 하나
+  	private int balance;
+  	
+  	private ArrayList<IFundingCallback> subscribers; // 구독자 여러명
+  	
+  	public CrowdFundingAccount() {
+      	this.subscribers = new ArrayList<IFundingCallback>();
+    }
+  
+  	public void subscribe(IFundingCallback sub) {
+      	subscribers.add(sub);
+    }
+  
+  	public void support(String backer, int amount) {
+      	this.balance += amount;
+      	for (IFundingCallback sub : subscribers) {
+          	sub.onMoneyRaised(backer, amount);
+        }
+    }
+}
+```
+
+*옵저버 패턴은 결국 콜백 함수의 목록이다!*
+
+## 메모리 누수 문제
+
+옵저버 패턴은 매니지드 언어에서 메모리 누수를 만드는 주범
+
+```java
+CrowdFundingAccount funding; // 보유한 펀딩 계좌
+
+// 장부 앱에서 구독함
+BookkeepingApp book = new BookkeepingApp();
+funding.subscribe(book);
+
+// 장부 앱으로 뭔가를 함
+
+// 할 일이 끝남. 장부 앱을 지우자
+book = null;
+
+// 시간이 많이 지나도 여전히 book이 사라지지 않음
+```
+
+`private ArrayList<IFundingCallback> subscribers;`에서 여전히 참조하고 있기 때문. 따라서 직접 지워줘야 한다.
+
+해결법
+
+```java
+public void unsubscribe(IFundingCallback sub) {
+  	subscribers.remove(sub);
+}
+```
+
+- `unsubscribe()`를 호출해야 한다는 것은 쉽게 잊혀질 수 있다.
+
+
+
+
+
 
 # Reference
 [POCU 강의](https://pocu.academy/ko/Courses/COMP2500)
