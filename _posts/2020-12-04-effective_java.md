@@ -170,4 +170,4 @@ NutritionFacts cocaCola = new NutritionFacts.Builder(240, 0)
 
 
 # Reference
-[책 <이펙티브 자바>](http://www.yes24.com/Product/Goods/65551284)
+[책 *이펙티브 자바*](http://www.yes24.com/Product/Goods/65551284)
