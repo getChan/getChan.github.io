@@ -22,14 +22,14 @@ last_modified_at: 2021-01-13T08:06:00-05:00
 
 # 구조
 
-![image-20210113215039506](/Users/kakao_ent/Library/Application Support/typora-user-images/image-20210113215039506.png)
+![image-20210113215039506](/assets/images/hbase/relational.png)
 
 Hbase API는 크게 세 메서드가 있다 : Get, Put, Scan
 
 - GET / PUT : 특정 row를 가져오는 연산, rowkey가 제공되어야 한다
 - SCAN : row의 범위로 수행된다. rowkey의 start와 stop을 제공하거나 start, stop이 없을 땐 전체 테이블을 스캔한다.
 
-![image-20210113215059102](/Users/kakao_ent/Library/Application Support/typora-user-images/image-20210113215059102.png)
+![image-20210113215059102](/assets/images/hbase/multimap.png)
 
 Hbase는 전형적인 패턴으로 최적화되있고, 디폴트로 가장 최근 버전만을 반환한다. 쿼리로 여러 버전을 요청할 수 있다.
 
@@ -37,7 +37,7 @@ rowkey는 RDB의 primary key와 같다. 그러나, 테이블이 설정된 후에
 
 Hbase는 key-value store와 같다.
 
-![image-20210113215959026](/Users/kakao_ent/Library/Application Support/typora-user-images/image-20210113215959026.png)
+![image-20210113215959026](/assets/images/hbase/keyvalue.png)
 
 # 테이블 설계 기본
 
