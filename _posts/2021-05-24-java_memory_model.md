@@ -30,3 +30,56 @@ JMM은 서로 다른 하드웨어가 갖고 있는 각자의 메모리 모델을
 - 완료 메서드(`finalizer`) 규칙 : 특정 객체에 대한 생성 메소드가 완료되는 시점은 완료 메서드가 시작하는 시점보다 미리 발생한다.
 - 전이성(`transitivity`) : A가 B보다 미리 발생하고, B가 C보다 미리 발생한다면, A는 C보다 미리 발생한다.
 
+# 안전한 공개
+
+JMM은 강력한 미리 발생 규칙에 따라 동작함에도, 안전한 공개 기법을 사용하는 이유
+
+- 프로그램을 작성할 때는 개별적으로 메모리에 쓰기 작업이 일어난 이후의 가시성을 놓고 안전성을 확인하기보다 객체의 소유권을 넘겨주고 공개하는 작업이 훨씬 안전하기 때문
+
+lazy initialization 을 잘못 사용하면 스레드 안전하지 않을 수 있다.
+
+- 스레드 안전한 초기화 방법
+
+  ```java
+  @ThreadSafe
+  public class SafeLazyInitialization {
+    	private static Resource resource;
+    		
+    	public synchronized static Resource getInstance() {
+        	if (resource == null) {
+            	resource = new Resource();
+          }
+        	return resource;
+      }
+  }
+  ```
+
+- 늦은 초기화 홀더 클래스
+
+  ```java
+  @ThreadSafe
+  public class ResourceFactory {
+    	private static class ResourceHolder {
+        	public static Resource resource = new Resource();
+      }
+    
+    	public static Resource getResource() {
+        	return ResourceHolder.resource;
+      }
+  }
+  ```
+
+# 초기화 안전성
+
+초기화 안전성을 보장한다는 의미는 올바르게 생성된 불변 객체를 어떤 방법으로건 (데이터 경쟁이 발생하는 방법이더라도), 여러 스레드에서 별다른 동기화 구문 없이 안전하게 사용할 수 있다는 의미이다.
+
+- `final`로 선언된 변수를 갖고 있는 클래스는 초기화 안전성 조건 때문에 해당 인스턴스에 대한 참조를 최초로 생성하는 과정에서 재배치 작업이 일어나지 않는다.
+- `final` 변수를 통해 접근 가능한 모든 변수에 값을 쓰는 작업은 생성 메소드가 종료되는 시점에 '고정'된다.
+- `final` 로 선언되지 않은 변수나 생성 메서드가 종료된 이후에 변경되는 값에 대해서는 별도의 동기화 구문을 적용해야 가시성을 확보할 수 있다.
+
+# 요약
+
+자바 메모리 모델은 특정 스레드에서 메모리를 대상으로 취하는 작업이 다른 스레드에게 어떻게 보이는지의 여부를 명시하고 있다. 가시성을 보장해주는 연산은 **미리 발생**이라는 규칙을 통해 부분적으로 실행 순서가 정렬된 상태를 유지하며, **미리 발생 규칙**은 개별적인 메모리 작업이나 동기화 작업의 수준에서 정의하는 규칙이다. 충분히 동기화되지 않은 상태에서는 공유된 데이터를 여러 스레드에서 사용할 때는 이상현상이 발생할 수 있다.
+
+안전한 공개 등 고수준의 방법을 적용하면 미리 발생 규칙과 같은 저수준을 신경쓰지 않아도 스레드 안전성을 보장할 수 있다.
+
