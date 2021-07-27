@@ -62,8 +62,6 @@ C 배열은 참조형이 아니다. (char ch[64]) `new`로 만든 데이터가 �
 
 
 
-
-
 # 참고
 
 POCU 강의 ["C 언매니지드 프로그래밍"](https://pocu.academy/ko/Courses/COMP2200)
