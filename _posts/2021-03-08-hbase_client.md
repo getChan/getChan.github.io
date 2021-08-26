@@ -36,8 +36,8 @@ API는 HBase 1.0.0 이후로 변경됬다.
 
 # `1.0.0` 이전 API
 
-`HTable` 인스턴스로 HBase 클러스터와 통신했다. `Table` 인스턴스는 thread-safe가 아니라 하나의 스레드만 해당 인스턴스를 사용할 수 있다.
+`HTable` 인스턴스로 HBase 클러스터와 통신했다. `HTable` 인스턴스는 thread-safe가 아니라 하나의 스레드만 해당 인스턴스를 사용할 수 있다.
 
-내부에서는 연결들이 맵 안에 저장되고 사용 중인 `Configuration` 인스턴스가 키가 된다.
-- 같은 `Configuration` 인스턴스를 첨조하는 `HTable` 은 같은 `HConnection` 인스턴스를 공유한다.
+내부에서는 Connection들이 맵 안에 저장되고 사용 중인 `Configuration` 인스턴스가 키가 된다.
+- 같은 `Configuration` 인스턴스를 참조하는 `HTable` 은 같은 `HConnection` 인스턴스를 공유한다.
 
