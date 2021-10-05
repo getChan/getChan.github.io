@@ -84,9 +84,87 @@ last_modified_at: 2021-09-29T08:06:00-05:00
    - 3~5개까지는 낱개 변수로, 그 이후에는 구조체로 넘기자
    - 구조체를 사용하면 실수를 줄일 수 있고, 주소로 전달할 경우 성능을 빠르게 할 수 있다.
 
-   
 
+## 얕은 복사, 깊은 복사
 
+- 얕은 복사 : 실제 데이터가 아니라 주소를 복사하는 걸 얕은 복사라고 함
+- 깊은 복사 : 구조체 변수마다 독자적인 메모리 공간을 만들어주고 문자열을 복사해야 함
 
+파일을 쓸 때도 문자열이 아닌 주소값을 쓰지 않도록 주의해야 한다.
 
+주소값이 아닌 배열을 복사하여 매개변수로 전달하는 방법
+
+```c
+enum { NAME_LEN = 32 };
+typedef struct {
+  char firstName[NAME_LEN]; // 포인터가 아닌 배열로 선언하면 된다. 
+  char lastName[NAME_LEN];
+} name_t;
+```
+
+베스트 프랙티스
+
+- 가능한 한 덩어리 메모리에 모든 데이터가 들어가고 대입 가능한 구조체를 만들자. 복사가 가능하다
+- 즉, 포인터만 없으면 됨
+
+## 구조체를 구조체의 멤버로
+
+```c
+struct user_info_t {
+  unsigned int id; // 4 byte
+  name_t name; // 64 byte
+  unsigned short height; // 2 byte? X -> 4 byte
+  float weight; // 4 byte
+  unsigned short age; // 2 byte? X -> 4 byte
+};
+```
+
+- 4바이트를 안 채운 애들이 쓸데없는 공간을 먹음
+  - 시스템 상의 제약이 있거나 효율성 때문
+- 각 시스템마다 메모리에 접근 할 때 사용하는 주소에 대한 요구사항이 다름
+- 특정 시스템은 `n` 바이트 배수인 시작 주소에서만 메모리 접근 가능
+- X86 시스템은 4바이트(워드 크기) 경계에서 읽어오는게 효율적
+  - 이걸 4 바이트 경계에 정렬된다(aligned)고 함
+- 컴파일러가 알아서 각 멤버의 시작 위치를 경계에 맞춤
+  - 32비트 clang 윈도우는 4바이트 정렬
+
+패딩 줄이기
+
+```c
+struct user_info_t {
+  unsigned int id; // 4 byte
+  name_t name; // 64 byte
+  unsigned short height; // 2 byte
+  unsigned short age; // 2 byte
+  float weight; // 4 byte
+};
+```
+
+- 2개의 short 형 변수가 4바이트로 합체! (안 해 줄 수 도)
+
+구조체 베스트 프랙티스
+
+- 구조체를 파일 등에 저장해야 해서 바이트 크기가 정확히 맞아야 한다면?
+
+  - `assert()` 를 사용해서 크기를 확인
+
+    ```c
+    #include <assert.h>
+    assert(sizeof(user_info_t) == 76);
+    ```
+
+  - 구조체에 패딩을 명시
+
+    ```c
+    struct user_info_t {
+      unsigned int id; // 4 byte
+      name_t name; // 64 byte
+      float weight; // 4 byte
+      unsigned short height; // 2 byte
+      unsigned short age; // 2 byte
+    	char unsused[2];
+    };
+    ```
+
+  
 
