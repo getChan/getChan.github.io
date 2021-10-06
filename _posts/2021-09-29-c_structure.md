@@ -168,3 +168,43 @@ struct user_info_t {
 
   
 
+## 비트 필드
+
+c에서 구조체를 사용하면 간단히 비트 플래그 구현 가능
+
+```c
+typedef struct {
+  unsigned char b0 : 1; // 1비트만 쓰겠다!
+  unsigned char b1 : 1;
+  unsigned char b2 : 1;
+  unsigned char b3 : 1;
+  unsigned char b4 : 1;
+  unsigned char b5 : 1;
+  unsigned char b6 : 1;
+  unsigned char b7 : 1;
+} bitflags_t; // 총 1byte
+```
+
+# 공용체
+
+- 똑같은 메모리 위치를 다른 변수로 접근하는 방법
+- 즉, 공용체 안에 있는 여러 변수들이 같은 메모리를 공유
+
+```c
+typedef union {
+  unsigned char val;
+  struct {
+    unsigned char b0 : 1;
+    unsigned char b1 : 1;
+    unsigned char b2 : 1;
+    unsigned char b3 : 1;
+    unsigned char b4 : 1;
+    unsigned char b5 : 1;
+    unsigned char b6 : 1;
+    unsigned char b7 : 1;
+  } bits;
+} bigflags_t;
+
+// val 은 8개 비트를 한번에 1byte char로 읽는다.
+```
+
