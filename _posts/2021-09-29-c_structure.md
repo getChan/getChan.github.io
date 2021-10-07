@@ -208,3 +208,43 @@ typedef union {
 // val 은 8개 비트를 한번에 1byte char로 읽는다.
 ```
 
+# 함수 포인터
+
+함수 포인터, 함수를 변수에 저장할 수 있을까?
+
+- 함수의 시작 주소를 변수에 저장하면 되겠다!
+
+함수의 파라미터로 함수를 전달할 수 있을까?
+
+- 함수 코드의 시작 메모리 주소를 파라미터로 전달하고
+- 호출된 함수 내부에서 함수 파라미터 주소를 실행하면 되겠다!
+
+함수를 매개변수로 전달할 때 필요한 것들
+
+- 자기 자신이 받아야 하는 매개변수 목록
+- 자기 자신이 반환하는 자료형
+- 호출된 함수는 파라미터 함수의 시그니처를 알 방법이 없음! 그냥 4byte 주소값
+
+함수 포인터 변수의 선언과 사용
+
+```c
+double add(double x, double y) {
+  return x + y;
+}
+
+double (*funcVar)(double, double) = add;
+result = funcVar(op1, op2)
+```
+
+함수 포인터 매개변수의 선언과 사용
+
+```c
+double calculate(double, double, double, (*)(double, double));
+
+double calculate(double x, double y, double (*funcVar)(double, double)) {
+  return funcVar(x, y);
+}
+
+result = calculate(op1, op2, add)
+```
+
