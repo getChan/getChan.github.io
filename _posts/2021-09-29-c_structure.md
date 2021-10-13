@@ -248,3 +248,11 @@ double calculate(double x, double y, double (*funcVar)(double, double)) {
 result = calculate(op1, op2, add)
 ```
 
+## `void *`
+
+- 범용적 포인터
+- 어떤 포인터라도 대입 가능
+  - 어떤 변수의 주소라도 곧바로 대입 가능
+- 단 다음의 경우 캐스팅 또는 대입해서 써야 함
+  - 역 참조( 몇 바이트 읽을 지 모름 )
+  - 포인터 산술 연산 ( 몇 바이트 이동할지 모름 )
