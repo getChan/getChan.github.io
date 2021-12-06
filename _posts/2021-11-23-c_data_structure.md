@@ -236,7 +236,161 @@ void remove(node_t** phead, int n) {
 
 # 해시 테이블
 
+## 배열을 사용한 해시 테이블
 
+```c
+int has_value(int value){
+  int i;
+  int start_index;
+
+  start_index = value % BUCKET_SIZE;
+  if (start_index < 0) {
+    start_index += BUCKET_SIZE;
+  }
+  i = start_index;
+
+  do {
+    if (s_numbers[i] == value) {
+      return TRUE;
+    } else if (s_numbers[i] == INT_MIN) {
+      return FALSE;
+    }
+    i = (i + 1) % BUCKET_SIZE;
+  } while(i != start_index);
+
+  return FALSE;
+}
+
+int add(int value) {
+  int i;
+  int start_index;
+
+  start_index = value % BUCKET_SIZE;
+  if (start_index < 0) {
+    start_index += BUCKET_SIZE;
+  }
+
+  i = start_index
+
+  do {
+    if (s_numbers[i] == value || s_numbers[i] == INT_MIN) {
+      s_numbers[i] = value;
+      return TRUE;
+    }
+    i = (i + 1) % BUCKET_SIZE;
+  } while(i != start_index);
+
+  return FALSE;
+}
+```
+- 초간단 해시 테이블
+- 색인 중복이 없으면, $O(1)$
+- 색인 중복이 있으면, 최악의 경우 $O(N)$
+
+## 해시 함수
+임의의 크기를 가진 데이터를 **고정 크기**의 값에 대응하게 하는 함수
+- 입력값이 같으면 출력값은 언제나 같다.
+- 입력값이 달라도 출력값이 같을 수 있다.
+  - **해시 충돌**
+
+## 해시 테이블에 문자열 저장하기
+- 해시 함수의 입력값으로 들어갈 **정수**를 뽑는다
+  - 문자열을 대표하는 정수값. 
+  - **해시 값**
+
+
+참고 : java `String` `hashCode()`
+```java
+public int hashCode() {
+    int h = hash; // for cache
+    if (h == 0 && value.length > 0) {
+        char val[] = value;
+
+        for (int i = 0; i < value.length; i++) {
+            h = 31 * h + val[i];
+        }
+        hash = h;
+    }
+    return h;
+}
+```
+
+## 해시 충돌 
+
+해시 충돌을 방지할 수 있다면?
+- `char*` 를 복사해서 키로 저장할 이유가 없음
+- 해시 값인 정수형(`int`) 만 저장해도 됨
+- `char*` 저장을 위한 동적 메모리 할당하지 않아도 됨!
+  - 설능상 이점
+
+좋은 해시 함수
+- 필수 : 어떤 경우에도 고정된 크기의 값으로 변환 가능
+- 해시 충돌이 거의 없는 해시 함수
+
+### 충돌을 고려한 해시 맵
+```c
+int add(const char* key, int value, size_t (*hash_func)(const char*, size_t)) {
+  size_t i;
+  size_t start_index;
+  size_t hash_id;
+
+  hash_id = hash_func(key, strlen(key));
+  start_index = hash_id % BUCKET_SIZE;
+  i = start_index;
+
+  do {
+    if (s_keys[i] == NULL) {
+      // 새 키-값을 삽입
+      return TRUE;
+    }
+
+    if (strcmp(s_keys[i], key) == 0){
+      return TRUE;
+    } 
+    
+    i = (i + 1) % BUCKET_SIZE;
+
+  } while (i != start_index);
+
+  return FALSE;
+}
+```
+
+### 충돌이 없을 때 해시 맵
+```c
+int add_fast(size_t hash_key, const char* value) {
+  size_t i;
+  size_t start_index;
+
+  start_index = hash_key % BUCKET_SIZE;
+  i = start_index;
+
+  do {
+    if (s_keys[i] == INT_MIN) {
+      // 새 해시-값 삽입
+      return TRUE;
+    }
+    
+    if (s_keys[i] == hash_key) {
+      return TRUE;
+    }
+
+    i = (i + 1) % BUCKET_SIZE;
+  } while (i != start_index);
+
+  return FALSE;
+}
+```
+
+## 베스트 프랙티스 : 어떤 자료구조를 쓸까
+- 디폴트로 배열
+  - 가장 간단함
+  - 캐시 메모리 덕분에 O 표기법에 상관없이 성능이 가장 빠른 경우가 많음
+- 연결 리스트
+  - 빈번한 데이터 삽입 또는 삭제?
+- 해시
+  - 데이터 양이 많은데 검색을 자주 해야 함
+  - 배열에 넣기 힘든 데이터 (연속적, 규칙적인 색인이 나올 수 없는 경우)
 
 # 출처
 
