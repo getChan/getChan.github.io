@@ -328,6 +328,7 @@ public int hashCode() {
 - 해시 충돌이 거의 없는 해시 함수
 
 ### 충돌을 고려한 해시 맵
+
 ```c
 int add(const char* key, int value, size_t (*hash_func)(const char*, size_t)) {
   size_t i;
@@ -357,6 +358,7 @@ int add(const char* key, int value, size_t (*hash_func)(const char*, size_t)) {
 ```
 
 ### 충돌이 없을 때 해시 맵
+
 ```c
 int add_fast(size_t hash_key, const char* value) {
   size_t i;
