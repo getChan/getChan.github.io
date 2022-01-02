@@ -16,11 +16,11 @@ minimal_mistakes_skin    : "dark" # "air", "aqua", "contrast", "dark", "dirt", "
 
 # Site Settings
 locale                   : "en-US"
-title                    : "개발새발정리노트"
+title                    : "컴퓨터 엔지니어로 살아남기"
 title_separator          : "-"
 name                     : "남궁찬"
-description              : "어떻게 될지 모르는 개발 블로그"
-url                      : "https://getchan.github.io/"
+description              : ""
+url                      : "https://getchan.github.io"
 baseurl                  : '/' # the subpath of your site, e.g. "/blog"
 repository               : 'getChan/getChan.github.io' # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser                   : "/assets/images/haha.png"
@@ -106,9 +106,9 @@ analytics:
 
 # Site Author
 author:
-  name             : "빛날찬"
+  name             : "생존자"
   avatar           : "/assets/images/haha.png" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "오래도록 은은히 빛나는.\n 질문이나 피드백 감사합니다."
+  bio              : "질문이나 피드백 감사합니다."
   location         : "South Korea"
   email            :
   links:
@@ -129,7 +129,7 @@ author:
       url: "https://github.com/getChan"
     - label: "Instagram"
       icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/getcharn"
+      # url: "https://instagram.com/getcharn"
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/namgung-chan-6a06441b6/"
