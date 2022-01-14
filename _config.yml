@@ -106,7 +106,7 @@ analytics:
 
 # Site Author
 author:
-  name             : "생존자"
+  name             : "남궁찬"
   avatar           : "/assets/images/haha.png" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "질문이나 피드백 감사합니다."
   location         : "South Korea"
