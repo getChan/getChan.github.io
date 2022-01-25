@@ -54,4 +54,4 @@ published: false
 
 # 참고
 - 책 "스파크 완벽 가이드"
-- [https://www.popit.kr/author/jerryjung](https://www.popit.kr/author/jerryjung)
+- [https://www.popit.kr/spark2-0-new-features1-dataset/#:~:text=Datasets,-spark2.0%20api&text=Spark2.0%EB%B6%80%ED%84%B0%EB%8A%94%20Dataset%EC%9D%80,%EB%90%98%EC%A7%80%20%EC%95%8A%EB%8A%94%20JVM%EA%B0%9D%EC%B2%B4%EC%9D%B4%EB%8B%A4](https://www.popit.kr/spark2-0-new-features1-dataset/#:~:text=Datasets,-spark2.0%20api&text=Spark2.0%EB%B6%80%ED%84%B0%EB%8A%94%20Dataset%EC%9D%80,%EB%90%98%EC%A7%80%20%EC%95%8A%EB%8A%94%20JVM%EA%B0%9D%EC%B2%B4%EC%9D%B4%EB%8B%A4)
