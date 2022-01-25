@@ -7,7 +7,6 @@ categories:
 tags:
   - spark
 last_modified_at: 2022-01-25T08:06:00-05:00
-published: false
 ---
 
 구조적 API 는 다양한 유형의 데이터를 처리할 수 있다. 세 가지 분산 컬렉션 API가 있다.
