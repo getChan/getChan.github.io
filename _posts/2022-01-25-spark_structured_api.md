@@ -53,4 +53,5 @@ published: false
    RDD를 대상으로 모든 코드를 실행하고 처리 결과를 반환한다.
 
 # 참고
-책 "스파크 완벽 가이드"
+- 책 "스파크 완벽 가이드"
+- [https://www.popit.kr/author/jerryjung](https://www.popit.kr/author/jerryjung)
