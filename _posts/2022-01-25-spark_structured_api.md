@@ -51,6 +51,26 @@ last_modified_at: 2022-01-25T08:06:00-05:00
    
    RDD를 대상으로 모든 코드를 실행하고 처리 결과를 반환한다.
 
+
+# RDD
+
+스파크의 저수준 API.
+
+다음과 같은 경우 사용한다
+- 고수준 API에서 제공하지 않는 기능이 필요한 경우. 클러스터의 물리적 데이터 배치를 세밀하게 제어해야 하는 경우
+- RDD로 된 기존 코드를 유지해야 하는 경우
+- accumulator, broadcast와 같은 분산형 공유 변수를 다뤄야 하는 경우
+
+모든 DataFrame/Dataset은 RDD로 컴파일된다. 구조회된 API의 각 레코드는 스키마를 알고 있는 필드로 구성된 반면, RDD의 레코드는 자바, 스칼라, 파이썬 객체일 뿐이다.
+
+따라서 개발자가 강력한 제어권을 가질 수 있다. 그러나 레코드의 내부 구조를 스파크에서 파악할 수 없어 최적화가 불가능하다.
+
+> HBase의 데이터를 다루는 경우, RDD를 사용하면 Scan 객체를 직접 통제할 수 있으므로 원하는 필터를 추가할 수 있다. 스파크 최적화보다 스캔 필터 추가가 성능이 더 좋을수도...
+>
+> hbase-spark 이용하면 RDD의 파티셔닝을 리전별로 해준다.
+
+
 # 참고
+
 - 책 "스파크 완벽 가이드"
 - [https://www.popit.kr/spark2-0-new-features1-dataset/#:~:text=Datasets,-spark2.0%20api&text=Spark2.0%EB%B6%80%ED%84%B0%EB%8A%94%20Dataset%EC%9D%80,%EB%90%98%EC%A7%80%20%EC%95%8A%EB%8A%94%20JVM%EA%B0%9D%EC%B2%B4%EC%9D%B4%EB%8B%A4](https://www.popit.kr/spark2-0-new-features1-dataset/#:~:text=Datasets,-spark2.0%20api&text=Spark2.0%EB%B6%80%ED%84%B0%EB%8A%94%20Dataset%EC%9D%80,%EB%90%98%EC%A7%80%20%EC%95%8A%EB%8A%94%20JVM%EA%B0%9D%EC%B2%B4%EC%9D%B4%EB%8B%A4)
