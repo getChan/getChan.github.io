@@ -1,6 +1,6 @@
 ---
 title: "Spark 구조적 API"
-excerpt: "Spark 스터디(1)"
+excerpt: "Spark High Level API"
 
 categories:
   - data
@@ -65,7 +65,11 @@ last_modified_at: 2022-01-25T08:06:00-05:00
 
 따라서 개발자가 강력한 제어권을 가질 수 있다. 그러나 레코드의 내부 구조를 스파크에서 파악할 수 없어 최적화가 불가능하다.
 
-> HBase의 데이터를 다루는 경우, RDD를 사용하면 Scan 객체를 직접 통제할 수 있으므로 원하는 필터를 추가할 수 있다. 스파크 최적화보다 스캔 필터 추가가 성능이 더 좋을수도...
+> ## HBase-Spark
+>
+> hbase-spark 라이브러리에서는 RDD를 사용하면 Scan 객체를 직접 통제할 수 있으므로 원하는 필터를 추가할 수 있다. 스파크 최적화보다 스캔 필터 추가가 성능이 더 좋을수도...
+>
+> hbase-spark ('org.apache.hbase:hbase-spark:jar:2.0.0-alpha4') 코드 들여다봤는데, SparkSQL 을 이용했을때는 HBase에서의 Filter를 최적화하거나 사용하지 않는다. 단, 조건절 푸시다운 등 스파크 최적화는 지원한다.
 >
 > hbase-spark 이용하면 RDD의 파티셔닝을 리전별로 해준다.
 
