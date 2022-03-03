@@ -1,6 +1,7 @@
 ---
 title:  "YouTube 댓글 분석을 통한 컨텐츠 점수 산출 프로젝트(1)"
 excerpt: "BOAZ ADV PROJECT- 프로젝트 환경구축"
+published: false
 
 categories:
   - projects

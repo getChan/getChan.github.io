@@ -1,6 +1,7 @@
 ---
 title: "데이터 분석 직무 역량 평가 대비 - 시계열 데이터 처리"
 excerpt: "데이터 분석 직무 역량 평가 대비"
+published: false
 
 categories:
   - data
