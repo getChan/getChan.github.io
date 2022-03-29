@@ -60,7 +60,7 @@ FLASK_ENV=development FLASK_APP=app.py flask run
 ```
 회원가입 요청을 보내보자
 ```shell
-http -v POST localhost:5000/sign-up name=남궁찬 email=chan@gmail.com password=1234
+http -v POST localhost:5000/sign-up name=XXX email=chan@gmail.com password=1234
 ```
 
 ## 300자 체한 트윗 올리기
