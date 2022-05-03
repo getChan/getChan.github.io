@@ -28,5 +28,13 @@ last_modified_at: 2022-05-03T08:06:00-05:00
     >
     > **따라서 프로젝트를 유지관리모드로 전환**
 
+# 해보기
+- Rust를 웹어셈블리로 컴파일하기
+
+https://developer.mozilla.org/ko/docs/WebAssembly/Rust_to_wasm#rust_%EB%B0%8F_webassembly_%EC%82%AC%EC%9A%A9_%EC%82%AC%EB%A1%80
+- 개발 프레임워크
+[Yew](https://developer.mozilla.org/ko/docs/WebAssembly/Rust_to_wasm)
+> Yew is a modern Rust framework for creating multi-threaded front-end web apps using WebAssembly.
+
 # 이 외 좋은 문서들
 - https://developer.mozilla.org/ko/docs/WebAssembly
