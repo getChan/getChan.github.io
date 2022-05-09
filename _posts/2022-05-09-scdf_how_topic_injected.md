@@ -1,6 +1,6 @@
 ---
 title: "SCDF는 stream app에 토픽명을 어떻게 주입해줄까?"
-excerpt: "SCDF는 stream app에 바인딩 정보(토픽명)을 어떻게 주입해줄까?"
+excerpt: "spring cloud dataflow는 stream app에 바인딩 정보를 어떻게 주입해줄까?"
 
 categories:
   - TIL
