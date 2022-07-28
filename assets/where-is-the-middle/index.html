@@ -1,1 +1,60 @@
-"helloworld"
+<script type="text/javascript">
+    var url = new URL(window.location.href);
+    var keywords = url.searchParams.get("keywords").split(",");
+
+    xsum = 0;
+    ysum = 0;
+
+    keywords.map(keyword => {
+        return requestApi(keyword);
+    }).forEach(r => {
+        console.log(r);
+        xsum += parseFloat(r.x);
+        ysum += parseFloat(r.y);
+    })
+
+    console.log(xsum, ysum);
+    xx = xsum/keywords.length;
+    yy = ysum/keywords.length;
+
+    console.log(xx, yy);
+    
+    var mapUrl = "https://www.google.com/maps/search/" + yy + "," + xx;
+    window.location.replace(mapUrl);
+
+    
+
+    function requestApi(keyword) {
+
+        var apiUrl = encodeURI("https://dapi.kakao.com/v2/local/search/keyword.json?size=1&" + "query=" + keyword);
+        var apiKey = "e6e76eaeb30ff226b04fba005f2885fd";
+
+        var xmlHttp = new XMLHttpRequest();
+        
+        xmlHttp.open("GET", apiUrl, false); // false for synchronous request
+        xmlHttp.setRequestHeader("Authorization", "KakaoAK " + apiKey);
+        xmlHttp.send(null);
+    
+        return JSON.parse(xmlHttp.responseText).documents[0];
+    }
+    
+    
+</script>
+
+<!-- / Maps each URL into a fetch() Promise
+var requests = urls.map(function(url){
+  return fetch(url)
+  .then(function(response) {
+// throw "uh oh!";  - test a failure
+return response.json();
+  })  
+});
+
+// Resolve all the promises
+Promise.all(requests)
+.then((results) => {
+  console.log(JSON.stringify(results, null, 2));
+}).catch(function(err) {
+  console.log("returns just the 1st failure ...");
+  console.log(err);
+}) -->
