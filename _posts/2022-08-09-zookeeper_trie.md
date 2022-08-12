@@ -1,5 +1,5 @@
 ---
-title: "Zookeeper에서 Trie 사용법"
+title: "Zookeeper내 Trie 구현"
 excerpt: "Trie 자료구조 in Zookeeper"
 
 categories:
