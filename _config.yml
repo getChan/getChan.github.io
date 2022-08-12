@@ -300,6 +300,7 @@ defaults:
       toc : true
       toc_sticky : true
       use_math : true
+      classes: wide
       
   # _pages
   - scope:
