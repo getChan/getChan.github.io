@@ -1,4 +1,4 @@
----
+-
 
 title: "Implement LRU cache by python in O(1)"
 excerpt: "orderedDict를 이용한 LRU cache 구현"
