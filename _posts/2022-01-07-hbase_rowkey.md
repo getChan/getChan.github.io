@@ -22,16 +22,17 @@ https://play.google.com/store/apps/details?id=com.towneers.www&hl=ko
 com.google.play:https/store/apps/details?id=com.towneers.www&hl=ko
 ```
 
+[참고 nutch javadoc](https://svn.apache.org/repos/asf/nutch/site/publish/apidocs-2.2/org/apache/nutch/util/TableUtil.html#reverseUrl(java.lang.String))
+
 ## 왜?
 
 **prefix 키 스캔의 효율을 위해서다.**
 
-우리가 `play.google.com` 호스트 이름을 가진 URL들을 전부 조회하려 한다고 가정하자.
-(일반적으로 `https://play`를 prefix로 하는 URL보다 `play.google.com`를 호스트로 하는 URL들을 조회하려는 경우가 많을 것이다.)
+우리가 `*.google.com` 도메인을 가진 URL들을 전부 조회하려 한다고 가정하자.
 
-Reversed URL로 저장되어 있다면 `play.google.com` 을 호스트 이름으로 하는 URL들을 조회할 때 전체 테이블을 scan할 필요가 없다. `com.google.play` prefix가 일치하는 리전만 scan하면 되고, 순차 read이기에 성능도 좋다.
+Reversed URL로 저장되어 있다면 `*.google.com` 을 도메인으로 하는 URL들을 조회할 때 전체 테이블을 scan할 필요가 없다. `com.google` prefix가 일치하는 리전만 scan하면 되고, 순차 read이기에 성능도 좋다.
 
-반면 원본 URL로 저장되어 있다면 `http`를 prefix로 하는 리전을 scan해야 하고, 이는 테이블을 full scan하게 된다.
+반면 원본 URL로 저장되어 있다면 `<schema>://<*>.google.com`를 prefix로 하는 리전을 scan해야 하고, 이는 테이블을 full scan하게 된다.
 
 > HBase의 테이블은 rowkey를 기반으로 정렬되어 있고, 테이블은 리전이라는 개념의 단위로 파티셔닝되어 분산 저장된다.
 
