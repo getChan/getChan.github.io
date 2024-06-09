@@ -1,5 +1,5 @@
 ---
-title: "Apache Arrow DataFusion 논문 메모"
+title: "Apache Arrow DataFusion 논문"
 excerpt: "Apache Arrow DataFusion: a Fast, Embeddable, Modular Analytic Query Engine"
 
 categories:
@@ -116,4 +116,62 @@ impl Stream for MyOperator {
     - `FairPool`
       - 파이프라인을 깨는 연산 스트림 간 동일한 리소스를 분배한다.
 
-## 최적화
+# 최적화
+
+## 쿼리 재작성
+논리 계획
+- 프로젝션 푸시다운, 필터 푸시다운, 리밋 푸시다운, 표현식 단순화, 공통 표현식 제거, join predicate extraction, correlated subquery flattening, outer-to-inner 조인 변환 등을 수행한다.
+
+실행 계획
+- 불필요 정렬 제거, 병렬 실행 최대화, 특정 알고리즘 결정(해시 or 머지 조인) 등을 수행한다.
+
+## 정렬
+- 정규화된 키
+- 메모리 부족시 임시 디스크 파일에 스필
+- `LIMIT`(Top K)에 특화된 구현
+
+## 그룹핑과 집계
+- 벡터화된 실행
+- 메모리 부족시 스필
+- 부분/완전 정렬된 그룹 키에 특화된 구현
+
+## 조인
+- 동등 조인의 predicate 자동 식별
+- 통계 기반으로 휴리스틱하게 재정렬
+- predicate pushdown
+- 최적 물리 조인 알고리즘 결정
+  - 병렬 인메모리 해시조인
+  - 머지조인
+  - 대칭 해시 조인
+  - 중첩 루프 조인
+  - 크로스 조인
+- inner, left, right, full, leftsemi, rightsemi, leftanti, rightanti 조인에 적용 가능하며 동등 predicate에 최적화되어 있다.
+
+## 윈도우 함수
+- SQL 윈도우 함수를 지원한다. (`OVER` 절을 포함하는 함수)
+- 재정렬을 최소화한다.
+  - 이미 정렬된 것을 재사용
+  - `PARTITION BY`, `ORDER BY` 에 기반하여 필요한 것만 정렬한다.
+- 윈도우 함수에서 요구하는 입력이 있을 때만 처리한다.
+
+## 정규화된 정렬 키 / RowFormat
+- `RowFormat`은 정규화된 키의 형태
+  - byte 기반 비교를 허용
+  - 예상 가능한 메모리 접근 패턴 제공
+
+## 정렬 순서 레버리징
+- 스트림에서 스트림으로 흐르는 입력 또는 중간 결과의 이미 존재하는 순서를 활용한다.
+- 여러 정렬 순서를 추적한다.
+  - 머지 조인이나 부분 정렬된 해시 집계 등
+- 중요한 이유
+  - 물리적 클러스터링
+    - 2차 인덱스를 유지하는 것은 비싸다. 데이터를 모으는 데 정렬 순서 레버리징이 유일한 수단.
+  - 메모리 사용량과 스트리밍 실행
+    - 실행 중 스트림 내 파티션에서 데이터가 어떻게 흐를지 결정한다.
+
+## 푸시다운과 지연 구체화
+데이터 출처로 몇가지 연산을 위임한다.
+- 프로젝션(컬럼 선택) : 불필요한 컬럼 생략
+- `LIMIT`, `OFFSET` : 필요한 결과를 얻을때까지만 실행
+- predicates(행 선택) : 필요한 행만 필터링한다.
+- 원천 데이터 scan동안 필터를 적용할 수 있다.
