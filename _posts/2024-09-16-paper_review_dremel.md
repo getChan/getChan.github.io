@@ -72,5 +72,23 @@ $$τ = dom | ⟨A1 : τ[∗|?],...,An : τ[∗|?]⟩$$
   - 그리고 압축된 필드값을 가진다.
 
 > 이해가 잘 안된다...
+> 잘 정리된 글 [Dremel Encoding](https://medium.com/@leeyh0216/parquet-internal-part-1-google-dremel-1-3b95e1136a05)
 
-## Splitting Recoreds into Columns
+## Splitting Records into Columns
+repetition과 definition을 계산하는 알고리즘
+- 레코드를 순회하면서 각 필드값의 레벨을 계산한다.
+- 필드값이 없더라도 계산되어야 한다. 희소한 데이터가 많기 때문에 가능한 가볍게 계산되어야 한다.
+- column stripe를 생성하기 위해 field writers 트리를 생성한다.
+
+## Record Assembly
+- 컬럼 기반 데이터로부터 레코드를 구성하는 것은 MR과 같은 레코드 기반 데이터 처리 도구에서 중요하다.
+- 필드의 집합이 주어지면 선택된 필드만 가져와서 레코드를 구성한다.
+  - 유한 상태 기계(FSM)를 생성한다. 
+  - 각 필드에서 필드값과 레벨을 읽고 출력 레코드에 값을 순차적으로 더한다
+  - FSM 상태는 각 선택된 필드의 reader와 연관된다.
+  - 상태 변경은 반복 레벨로 레이블링된다.
+  - reader가 값을 가져오면 다음 반복 레벨을 참고해 다음 reader를 결정한다.
+
+> 어렵다... 나중에 다시 읽어보자.
+
+# Query Language
