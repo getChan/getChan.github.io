@@ -46,7 +46,7 @@ $$ τ = dom | ⟨A1 : τ[∗|?],...,An : τ[∗|?]⟩ $$
 > 
 > 1. Origin and Usage: Dremel encoding was developed by Google for use in their Dremel system, which is used for interactive analysis of large datasets. Parquet, on the other hand, was developed by Twitter and Cloudera for use in the Hadoop ecosystem, and is often used with tools like Apache Spark and Apache Hive.
 > 
-> 2. Data Model: Both Dremel and Parquet support nested data structures. However, Dremel uses a model based on Protocol Buffers, while Parquet uses a model based on Apache Avro.
+> 2. Data Model: Both Dremel and Parquet support nested data structures. However, Dremel uses a model based on Protocol Buffers, ~~while Parquet uses a model based on Apache Avro. ~~
 > 
 > 3. Encoding and Compression: Both Dremel and Parquet support a variety of encoding and compression techniques. However, Parquet is often praised for its efficient use of encoding and compression to reduce storage space and increase query performance.
 > 
