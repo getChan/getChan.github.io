@@ -92,7 +92,6 @@ Presto는 ANSI SQL 명세를 따른다. 명세의 모든 기능을 구현한 것
   3. Inter-node Parallelism : 계획에서 워커간 병렬 수행될 부분(**stage**)를 식별한다. stage는 하나 이상으로 분산된다. 각각 다른 집합의 입력 데이터에서 동일한 계산을 수행한다. 엔진은 버퍼된 인메모리 데이터 전송(**shuffle**)을 통해 stage간 데이터를 전달한다. 셔플은 지연시간, 버퍼 메모리, 높은 CPU 오버헤드를 추가한다. 때문에 옵티마이저는 총 셔플 수를 신중하게 추론해야 한다.
   4. Intra-node Parallelism : 옵티마이저는 단일 노드에서 스레드로 병렬화할수 있는 부분을 식별한다. 이전시간 오버헤드와 상태(해시테이블 등) 이 효율적으로 스레드 간 공유될 수 있기에 노드간 병렬화보다 노드내 병렬화가 더 효율적이다. 엔진은 단일 파이프라인을 여러 스레드에서 수행할 수있다. 
 
-![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/4-Figure3-1.png)
-![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/5-Figure4-1.png)
+![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/4-Figure3-1.png) ![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/5-Figure4-1.png)
 
 ## *D. Scheduling
