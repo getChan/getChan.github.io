@@ -30,21 +30,18 @@ Presto 특징
 
 # Use Cases
 
-**Interactive Analytics**
-
+## Interactive Analytics
 페이스북은 대량의 멀티테넌트 데이터 웨어하우스를 운영중이다. 비즈니스 함수와 조직 유닛은 운영 클러스터의 작은 집합을 공유한다. 데이터는 분산 파일시스템에 저장되고 메타데이터는 별도 서비스에 저장된다. 이러한 시스템은 HDFS, Hive metastore service와 유사한 API를 가진다. 이를 'Facebook Data warehouse'라 부르며 Presto의 Hive 커넥터 변형을 이용해 읽고 쓴다. 
 
 엔지니어와 데이터 사이언티스트들은 가설 검증, 시각화 혹은 대시보딩을 위해 적은 양의 데이터(~50GB-3TB compressed)를 주로 수행한다. 유저는 주로 쿼리 작성 도구, BI도구, Jupyter notebook를 사용한다. 각 클러스터는 다양한 형태의 50~100개 쿼리를 동시 수행하며 수초/분 내 결과를 반환해야 한다. 유저는 **수행 시간에 예민하며 쿼리 자원 요구사항에 관심이 없다.** 유저는 탐색 분석 대부분에서 전체 결과 반환을 요구하지 않는다. 쿼리는 최초 결과 반환 후 취소되거나 `LIMIT` 절을 사용하여 반환 데이터를 제한한다.
 
-**Batch ETL**
-
+## Batch ETL
 새로운 데이터는 일정 간격의 ETL쿼리를 수행함으로써 데이터 웨어하우스에 적재된다. 쿼리는 task들의 의존성을 결정하고 적절하게 스케줄링하는 워크플로 관리 시스템에 의해 스케줄링된다. Presto는 레거시 배치 처리 시스템으로부터의 이전을 지원한다. 또한 ETL쿼리는 CPU의 많은 부분을 차지한다. 이러한 쿼리들은 데이터 엔지니어에 의해 작성되고 최적화된다. ETL 쿼리들은 대화형 분석 쿼리보다 리소스를 많이 사용한다. 또한 CPU-heavy한 변환과 메모리 집약적 집계 혹은 조인을 사용한다. **쿼리 지연은 리소스 효율성과 클러스터 처리량보다 상대적으로 덜 중요하다.**
 
-**A/B Testing**
-
+## A/B Testing
 A/B 테스팅은 통계적 가설 검증을 통한 제품 변경의 임팩트를 평가하는 것이다. Facebook 내 대부분의 A/B 테스트 인프라는 Presto에서 수행된다. 유저들은 테스트 결과가 몇 시간 내 제공되며 정확하기를 기대한다. 또한 유저가 더 깊은 통찰력을 얻기 위해 대화형 대기 시간(∼5-30초) 내에서 결과에 대해 임의의 slice와 dice를 수행할 수 있어야 한다. 미리 집계하는 방식으로 요구사항을 충족하는 것은 어렵다. 때문에 결과는 즉시 계산되어야 한다. 연산은 여러 데이터 셋을 조인해야 한다. 쿼리는 작아야 한다. 
 
-**Developer / Advertiser Analytics**
+## Developer / Advertiser Analytics
 
 외부 개발자나 광고주를 위한 리포팅 도구는 Presto를 사용한다. *Facebook Analytics* 는 Facebook 플랫폼을 사용하여 애플리케이션을 개발하는 개발자를 위한 분석 도구이다. 이는 제한된 쿼리 집합을 사용하여 웹 인터페이스를 노출한다. 집계 데이터 크기는 크지만 쿼리는 매우 선택적이다. 유저가 그들의 앱과 광고에만 접근하기 때문이다. 대부분의 쿼리는 조인, 집계, 윈도우 함수를 포함한다. 데이터 수집 지연 시간은 수분이며 쿼리 지연시간은 수초 내로 매우 제한적이다. 클러스터 99.999%의 가용해야 하며 많은 유저의 수백개 동시 쿼리를 지원해야 한다.
 
@@ -78,19 +75,16 @@ Presto는 확장 가능하여 다영한 플러그인 인터페이스를 제공�
 
 # System Design
 
-**A. SQL Dialect**
-
+## A. SQL Dialect
 Presto는 ANSI SQL 명세를 따른다. 명세의 모든 기능을 구현한 것은 아니지만 구현된 기능은 가능한 명세를 지원한다. 사용성을 위한 적은 확장만 추가로 만들어져 있다. 예를 들어 ANSI SQL에서 맵과 배열 타입과 같은 복잡한 타입의 연산은 까다롭다. 이를 단순화하기 위해 익명 함수와 내장 고차 함수(transform, filter, reduce)를 지원한다.
 
-**B. Client Interfaces, Parsing, and Planning**
-
+## B. Client Interfaces, Parsing, and Planning
 1. 클라이언트 인터페이스 : 코디네이터는 주로 RESTful HTTP 인터페이스를 노출하고 CLI도 지원한다. 다양한 BI도구와 호환되는 JDBC 드라이버도 지원한다. 
 2. 파싱 : SQL문을 구문 트리로 변환하기 위해 ANTLR 기반의 파서를 사용한다. 분석기는 타입 결정, 변환, 함수 해석, 스코프, 서브쿼리, 집계, 윈도우 등을 결정하기 위해 트리를 사용한다. 
 3. 논리 계획 : 논리 플래너는 구문 트리와 분석 정보를 이용해서 plan node의 트리 형태로 인코딩된 중간 표현(IR)을 생성한다. 각 노드는 물리적 논리적 연산을 나타낸다. 계획 노드의 자식은 입력값이다. 플래너는 완전히 논리적인 노드를 생성한다. **어떻게** 계획이 실행될 지에 대한 정보는 갖지 않는다. 
 ![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/3-Figure2-1.png)
 
-**C. Query Optimization**
-
+## C. Query Optimization
 논리 계획을 효율적인 실행 전략을 가진 물리적인 구조로 변환한다. 특정 지점에 도달하기까지 greedy하게 변환 규칙 집합을 평가한다. presto는 predicate, limit 푸시다운, column pruning, decorrelation 등의 룰을 가진다. 테이블과 컬럼 통계를 사용해 조인 전략 선택, 조인 재정렬 등 비용 기반의 최적화도 한다. 
   1. Data Layouts : 옵티마이저는 커넥터 Data Layout API를 통해 데이터의 물리적 layout을 알 수 있다. 커넥터는 위치, 파티셔닝, 정렬, 그룹핑, 인덱스 등 데이터 속성을 알려준다. 단일 테이블에서 다른 속성을 가진 여러 layout을 반환할 수 있다. 옵티마이저는 최적의 layout을 선택한다.
   2. Predicate Pushdown : 옵티마이저는 range와 equality predicate을 커넥터에게 전달하여 데이터를 효과적으로 필터링할 수 있다. MySQL 커넥터는 데이터가 존재하는 샤드만 조회한다. 여러 레이아웃이 있다면 predicate 컬럼에 인덱싱된 레이아웃을 선택한다. 하이브 커넥터는 partition pruning 및 파일 포맷 특징을 활용해서 성능 향상한다.
@@ -100,4 +94,4 @@ Presto는 ANSI SQL 명세를 따른다. 명세의 모든 기능을 구현한 것
 ![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/4-Figure3-1.png)
 ![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/5-Figure4-1.png)
 
-**D. Scheduling**
+## *D. Scheduling
