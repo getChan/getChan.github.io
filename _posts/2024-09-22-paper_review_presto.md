@@ -94,4 +94,4 @@ Presto는 ANSI SQL 명세를 따른다. 명세의 모든 기능을 구현한 것
 
 ![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/4-Figure3-1.png) ![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/5-Figure4-1.png)
 
-## *D. Scheduling
+## D. Scheduling
