@@ -78,7 +78,26 @@ Presto는 확장 가능하여 다영한 플러그인 인터페이스를 제공�
 
 # System Design
 
+**A. SQL Dialect**
 
+Presto는 ANSI SQL 명세를 따른다. 명세의 모든 기능을 구현한 것은 아니지만 구현된 기능은 가능한 명세를 지원한다. 사용성을 위한 적은 확장만 추가로 만들어져 있다. 예를 들어 ANSI SQL에서 맵과 배열 타입과 같은 복잡한 타입의 연산은 까다롭다. 이를 단순화하기 위해 익명 함수와 내장 고차 함수(transform, filter, reduce)를 지원한다.
 
+**B. Client Interfaces, Parsing, and Planning**
 
+1. 클라이언트 인터페이스 : 코디네이터는 주로 RESTful HTTP 인터페이스를 노출하고 CLI도 지원한다. 다양한 BI도구와 호환되는 JDBC 드라이버도 지원한다. 
+2. 파싱 : SQL문을 구문 트리로 변환하기 위해 ANTLR 기반의 파서를 사용한다. 분석기는 타입 결정, 변환, 함수 해석, 스코프, 서브쿼리, 집계, 윈도우 등을 결정하기 위해 트리를 사용한다. 
+3. 논리 계획 : 논리 플래너는 구문 트리와 분석 정보를 이용해서 plan node의 트리 형태로 인코딩된 중간 표현(IR)을 생성한다. 각 노드는 물리적 논리적 연산을 나타낸다. 계획 노드의 자식은 입력값이다. 플래너는 완전히 논리적인 노드를 생성한다. **어떻게** 계획이 실행될 지에 대한 정보는 갖지 않는다. 
+![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/3-Figure2-1.png)
 
+**C. Query Optimization**
+
+논리 계획을 효율적인 실행 전략을 가진 물리적인 구조로 변환한다. 특정 지점에 도달하기까지 greedy하게 변환 규칙 집합을 평가한다. presto는 predicate, limit 푸시다운, column pruning, decorrelation 등의 룰을 가진다. 테이블과 컬럼 통계를 사용해 조인 전략 선택, 조인 재정렬 등 비용 기반의 최적화도 한다. 
+  1. Data Layouts : 옵티마이저는 커넥터 Data Layout API를 통해 데이터의 물리적 layout을 알 수 있다. 커넥터는 위치, 파티셔닝, 정렬, 그룹핑, 인덱스 등 데이터 속성을 알려준다. 단일 테이블에서 다른 속성을 가진 여러 layout을 반환할 수 있다. 옵티마이저는 최적의 layout을 선택한다.
+  2. Predicate Pushdown : 옵티마이저는 range와 equality predicate을 커넥터에게 전달하여 데이터를 효과적으로 필터링할 수 있다. MySQL 커넥터는 데이터가 존재하는 샤드만 조회한다. 여러 레이아웃이 있다면 predicate 컬럼에 인덱싱된 레이아웃을 선택한다. 하이브 커넥터는 partition pruning 및 파일 포맷 특징을 활용해서 성능 향상한다.
+  3. Inter-node Parallelism : 계획에서 워커간 병렬 수행될 부분(**stage**)를 식별한다. stage는 하나 이상으로 분산된다. 각각 다른 집합의 입력 데이터에서 동일한 계산을 수행한다. 엔진은 버퍼된 인메모리 데이터 전송(**shuffle**)을 통해 stage간 데이터를 전달한다. 셔플은 지연시간, 버퍼 메모리, 높은 CPU 오버헤드를 추가한다. 때문에 옵티마이저는 총 셔플 수를 신중하게 추론해야 한다.
+  4. Intra-node Parallelism : 옵티마이저는 단일 노드에서 스레드로 병렬화할수 있는 부분을 식별한다. 이전시간 오버헤드와 상태(해시테이블 등) 이 효율적으로 스레드 간 공유될 수 있기에 노드간 병렬화보다 노드내 병렬화가 더 효율적이다. 엔진은 단일 파이프라인을 여러 스레드에서 수행할 수있다. 
+
+![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/4-Figure3-1.png)
+![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/5-Figure4-1.png)
+
+**D. Scheduling**
