@@ -95,3 +95,36 @@ Presto는 ANSI SQL 명세를 따른다. 명세의 모든 기능을 구현한 것
 ![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/4-Figure3-1.png) ![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/5-Figure4-1.png)
 
 ## D. Scheduling
+코디네이터는 계획 stage를 실행 가능한 task의 형태로 워커에게 분산한다.task는 단일 처리 단위라고 생각할 수 있다. 이후 코디네이터는 한 stage의 task를 다른 stage의 task에 shuffle로 연결한다. 데이터를 사용할 수 있는 즉시 stage간 스트리밍한다.
+
+task는 여러 파이프라인을 가질 수 있다. 파이프라인은 operators의 연결로 구성된다. 각 오퍼레이터는 데이터에 대한 단일 연산을 수행한다. 예를 들어 해시 조인을 수행하는 태스크는  적어도 두 파이프라인으로 구성되야 한다. 
+1. 해시 테이블을 생성하는 build 파이프라인
+2. probe 측에서 데이터를 전송하고 조인을 수행하는 probe 파이프라인
+
+> [*Hash Join*](https://en.wikipedia.org/wiki/Hash_join)
+> 
+> The classic hash join algorithm for an inner join of two relations proceeds as follows:
+> 
+> First, prepare a hash table using the contents of one relation, ideally  whichever one is smaller after applying local predicates. This relation is called the build side of the join. The hash table entries are mappings from the value of the (composite) join attribute to the remaining attributes of that row (whichever ones are needed).
+> 
+> Once the hash table is built, scan the other relation (the probe side). For each row of the probe relation, find the relevant rows from the build relation by looking in the hash table.
+
+옵티파이저는 각 파이프라인을 분할하여 독립적으로 수행하도록 병렬화할 수 있다. 위쪽 그림에서 build 파이프라인을 scan data 파이프라인과 해시 테이블을 생성하는 파이프라인으로 분할한다. 파이프라인들은 로컬 인메모리 셔플을 통해 합쳐진다. 
+
+쿼리 수행을 위해 엔진은 두개의 스케줄링 결정 집합을 만든다. 하나는 스테이지가 스케줄될 순서를 결정한다. 다른 하나는 스케줄될 태스크의 수를 결정한다.
+
+1. Stage Scheduling : Presto는 두개의 stage 스케줄링 정책을 지원한다.
+   1. all-at-once : 모든 스테이지 수행을 동시에 스케줄링하여 시간을 최소화한다. 데이터는 가용해지자마자 처리된다. 지연시간에 민감한 유즈케이스에 적합하다.(대화형 분석, 개발자 분석, A/B 테스트)
+   2. phased : 데이터 흐름과 연결된 컴포넌트를 모두 식별하고 우선순위에 따라 스케줄링한다. 예를 들어 해시 조인에서 build 파이프라인을 먼저 수행한 뒤 probe 파이프라인을 수행한다. 이 정책은 배치 처리 들엥서 메모리 효율적이다.
+2. Task Scheduling : 태스크 스케줄러는 계획 트리를 검사하고 leaf와 intermediate stage로 분류한다. 단말 스테이지는 커넥터로부터 데이터를 읽는다. 중간 스테이지는 중간 결과를 다른 스테이지로 처리한다.
+   1. leaf stage : 태스크 스케줄러는 네트워크와 커넥터의 제약조건을 고려하여 태스크를 워커 노드에 할당한다. 예를 들어 스케줄러는 커넥터 데이터 레이아웃을 시용하여 데이터가 있는 노드에 task를 할당한다. 대부분의 CPU 시간은 압축해제/디코딩/필터링/변환에 소요된다. 이것들은 병렬화 가능하기에 이러한 스테이지를 가능한 많은 노드에서 수행하면 빠르다. 때문에 말단 스테이지는 대부분의 워커 노드에서 수행되도록 충분한 수의 task로 쪼개진다.  
+   2. intermediate stages : 중간 스테이지 태스크들은 모든 워커 노드에 위치할 수 있지만 각 스테이지의 태스크 수는 정해져야 한다. 태스크 수는 커넥터 설정, 계획 속성,  데이터 레이아웃 등에 기반한다. 떄떄로 엔진은 동적으로 태스크 수를 변경한다. 
+3. Split Scheduling : 말단 스테이지의 태스크가 시작하면 워커 노드는 하나 이상의 스플릿을 처리한다. 분산 파일시스템에서 읽을 때 스플릿은 파일 경로와 파일의 리전 오프셋으로 구성된다. 레디스 kv 저장소에서 읽을 때 스플릿은 테이블 정보, 키, 값 형태, 쿼리할 호스트 목록으로 구성된다. 
+   1. Split Assignment : 코디네이터는 스플릿을 태스크에 할당한다. Presto는 커넥터에게 스플릿의 작은 배치를 요청하고 task에게 lazy하게 할당한다. 이는 다음과 같은 이점이 있다.
+   - 쿼리 응답 시간을 커넥터가 스플릿을 읽는 시간과 분리할 수 있다.
+   - 모든 데이터를 처리하지 않고도 결과를 반환할 수 있다. `LIMIT`절을 사용하면 더 빨리 결과를 반환할 수 있다.
+   - 워커는 스플릿의 큐를 유지한다. 코디네이터는 가장 짧은 큐에 태스크를 할당한다. 큐를 작게 유지하면 워커간 성능 차이를 해결할 수 있다.
+   - 모든 메타데이터를 메모리에 유지하지 않아도 된다. 
+   - 다만 쿼리 진행 상황의 정확한 추정은 어렵다.
+
+## E. Query Execution
