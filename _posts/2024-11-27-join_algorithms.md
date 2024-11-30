@@ -92,7 +92,6 @@ end
   
 2. merge
   - 로컬에서 수행된다. - 병렬처리 가능.
-- spark 나 MapReduce에서는 input이 정렬되어있는(1번 단계가 완료된) 경우가 많아서 주로 사용한다.
 
 ## Broadcast Join
 - 작은 테이블을 모든 노드로 복제(broadcast)하여 조인을 수행.
