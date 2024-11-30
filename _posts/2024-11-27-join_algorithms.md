@@ -101,6 +101,10 @@ end
 - 어떤 조인 알고리즘이든 사용 가능하다.
 - 큰 테이블은 다른 노드로 전달되지 않아도 되기 때문에 네트워크 비용이 절감된다.
 
+
+![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*EQOwbBV0AmDIvWfBtP4RCw.png)
+
 # 참고 
 - Database System Concepts, 7th Edition. *Abraham Silberschatz, Henry F. Korth, S. Sudarshan. McGraw-Hill Education. 2019.*
 - [CS186 berkely lecture](https://www.youtube.com/@CS186Berkeley/videos)
+- https://blog.clairvoyantsoft.com/apache-spark-join-strategies-e4ebc7624b06
