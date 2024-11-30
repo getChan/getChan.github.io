@@ -99,6 +99,7 @@ end
 - 각 노드에서 로컬 조인을 수행. - 병렬처리 가능.
 - 작은 테이블이 노드 메모리에 올라갈 수 있을 때 사용.
 - 어떤 조인 알고리즘이든 사용 가능하다.
+- 큰 테이블은 다른 노드로 전달되지 않아도 되기 때문에 네트워크 비용이 절감된다.
 
 # 참고 
 - Database System Concepts, 7th Edition. *Abraham Silberschatz, Henry F. Korth, S. Sudarshan. McGraw-Hill Education. 2019.*
