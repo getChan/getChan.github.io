@@ -82,6 +82,7 @@ end
 3. probe 
   - probe가 수행되려면 build 단계가 완료되어야 한다. (즉 pipeline-break.)
   - 로컬에서 수행된다. - 병렬처리 가능.
+
 ![](https://dt5vp8kor0orz.cloudfront.net/deb3b1023aa97d164a291e64032fa3f05d566a58/5-Figure4-1.png)
 
 ## Parallel Sort-Merge Join
