@@ -87,9 +87,9 @@ end
 
 ## Parallel Sort-Merge Join
 1. range partitioning - sort
-  - S, R을 조인 키의 범위로 파티셔닝한다. 동일한 키를 가진 레코드는 한 노드로 모인다.
-      - data skew가 발생할 수 있다. 이는 샘플링을 통해 해결할 수 있다.
-  - shuffle 발생
+  - S, R을 조인 키의 범위로 파티셔닝한다. 동일한 키를 가진 레코드는 한 노드로 모인다. - shuffle 발생
+    - data skew가 발생할 수 있다. 이는 샘플링을 통해 해결할 수 있다.
+  
 2. merge
   - 로컬에서 수행된다. - 병렬처리 가능.
 - spark 나 MapReduce에서는 input이 정렬되어있는(1번 단계가 완료된) 경우가 많아서 주로 사용한다.
