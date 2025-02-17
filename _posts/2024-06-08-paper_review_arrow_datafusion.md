@@ -82,15 +82,15 @@ Apache Arrow DataFusion : Rust 및 Apache Arrow 메모리 모델 기반으로 �
   - 파이프라인을 깨는 연산(풀 정렬, 최종 집계, 해시 조인)은 필요하다면 디스크에 스필한다.
 ```rust
 impl Stream for MyOperator {
-  ...
-  // Pull next input (may yield at await)
-  while let Some(batch) = stream.next().await {
-    // Calculate, check if output is ready
-    if Some(output) = self.process(&batch)? {
-      // "Return" RecordBatch to output
-      tx.send(batch).await
+    ...
+    // Pull next input (may yield at await)
+    while let Some(batch) = stream.next().await {
+        // Calculate, check if output is ready
+        if Some(output) = self.process(&batch)? {
+          // "Return" RecordBatch to output
+          tx.send(batch).await
+        }
     }
-  }
 }
 ```
 - Multi-Core Execution
