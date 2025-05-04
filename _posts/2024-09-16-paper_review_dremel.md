@@ -9,7 +9,7 @@ tags:
 last_modified_at: 2024-09-16T08:00:00-08:00
 ---
 
-> [본문보다 잘 쓰여진 아티클](https://sympathetic.ink/2013/09/11/Dremel-made-simple-with-Parquet.html)
+> [Parquet로 Dremel 구현하기](https://sympathetic.ink/2013/09/11/Dremel-made-simple-with-Parquet.html)
 
 논문 [Dremel: Interactive Analysis of Web-Scale Datasets](https://research.google.com/pubs/archive/36632.pdf)
 
