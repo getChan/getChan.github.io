@@ -110,12 +110,25 @@ Delta Lake 개념
 델타 레이크 테이블은데이터 객체와 트랜잭션 로그로 이루어진 디렉토리다. 클라이언트는 동시성 제어 규약을 통해 데이터 구조를 갱신한다.
 
 ## Storage Format
-> 원본 그림 2 참조
+Figure 2: Objects stored in a sample Delta table.
+```
+mytable/date=2020-01-01/1b8a32d2ad.parquet
+                       /a2dc5244f7.parquet
+       /date=2020-01-02/f52312dfae.parquet
+                       /ba68f6bd4f.parquet
+       /_delta_log/000001.json (Transaction’s operations)
+                  /000002.json
+                  /000003.json
+                  /000003.parquet (Combines log records 1 to 3)
+                  /000004.json
+                  /000005.json
+                  /_last_checkpoint (Contains {version: “000003”})
+```
 
 ### Data Objects
 - 파케이 객체로 저장된다. 하이브 파티션 네이밍 규약에 따라 디렉토리로 구성된다.
 - 각 데이터 객체는 고유한 이름을 가진다. 일반적으로 writer가 생성하는 GUID를 사용한다. 
-- 각 버전에 테이블에 어떤 객체가 속하는지는 트랜잭션 로그에 의해 결정된다.
+- 각 버전 테이블에 어떤 객체가 속하는지는 트랜잭션 로그에 의해 결정된다.
 
 ### Log
 - 로그는 `_delta_log` 디렉토리에 저장된다. 로그 레코드를 저장하는 json객체들로 구성된다.
@@ -142,8 +155,42 @@ Delta Lake 개념
   - 기본값으로 10개 트랜잭션마다 체크포인트를 생성한다.
   - LIST없이 마지막 체크포인트를 효율적으로 찾기 위해 체크포인트 writer는 `_delta_log/_last_checkpoint`파일을 쓴다. 
 
-## Access Protocol
+## Access Protocols
 - 접근 프로토콜은 serializable 트랜잭션을 객체 저장소의 연산만으로 가능하게끔 설계되었다. (객체 저장소는 eventually consistent임에도 불구)
 - 로그 레코드 객체(.json)은 클라이어트가 읽어야 할 루트 자료구조다.
 - eventually consistency 지연때문에 로그 레코드 객체가 보이지 않으면 보일때까지 기다렸다가 테이블 데이터를 읽는다.
 - 쓰기 트랜잭션에서 클라이언트는 하나의 writer만이 다음 로그 레코드를 생성하는 것을 보장할 수 있는 방법이 필요하다. 그리고 이것을 낙관적 동시성 제어를 구현하는데 사용한다.
+
+### Read Transactions
+읽기 트랜잭션은 테이블의 특정 버전을 안전하게 읽도록 한다. 5단계로 수행된다.
+1. 테이블의 로그 디렉토리에서 `_last_checkpoint` 읽는다. 만약 있다면. 최신 checkpoint ID를 가져온다.
+2. prefix를 checkpoint ID로 하여 LIST 연산한다. 새로운 `.json` 또는 `.parquet` 파일을 찾기 위함.
+3. 2의 결과로 테이블의 상태를 재구성한다. 즉 `add` 레코드에는 있지만 `remove`레코드에 없는 데이터 객체 집합. 그리고 관련 통계값. 
+4. 읽기 쿼리와 관련된 데이터 객체 집합을 식별하기 위해 통계를 사용한다.
+5. 클러스터에서 병렬로 객체 저장소에 쿼리한다. 최종 일관성 때문에 몇몇 워커는 로그 레코드에 있는 몇몇 객체를 가져올 수 없을 수 있다. 이때는 재시도한다.
+
+### Write Transactions
+일반적으로 5단계로 수행된다.
+1. 최신 로그 레코드 ID(`r`)를 식별하기 위해 읽기 트랜잭션의 1-2번 단계를 수행한다. 
+2. `r` 테이블을 읽는다
+3. 병렬로 데이터 객체를 쓴다 
+4. 다른 클라이언트가 `r+1.json` 로그 레코드 객체를 쓰지 않았다면 쓴다. 원자적으로 수행된다. 이 단계가 실패하면 트랜잭션은 재시도된다. 3에서 쓴 데이터 객체는 변경이 필요없다.
+5. 선택적으로, 새로운 `.parquet` 체크포인트를 쓴다. 마지막으로 `_last_checkpoint`를 `r+1`로 갱신한다.
+
+트랜잭션은 4단계(`r+1`로그 레코드 추가)가 성공하면 원자적으로 커밋한다. 다만 모든 스토리지 시스템이 원자성을 지원하지는 않는다.
+- GCP와 Azure의 객체 스토리지는 원자적 put-if-absent 연산을 지원한다.
+- HDFS같은 분산 파일시스템은 원자적 rename 연산을 지원한다.
+- S3는 지원이 안되어서 경량의 기능을 Databricks에서 수행한다.
+
+## Available Isolation Levels
+- 모든 쓰기 트랜잭션은 serializable이다. 
+- 읽기 트랜잭션은 snapshot isolation과 serializable를 지원한다. 
+- 현재는 하나의 테이블에 대한 트랜잭션만을 지원한다. 
+
+## Transaction Rates
+- 쓰기 트랜잭션 rate는 로그 레코드를 put-if-absent하는 연산의 지연에 따라 제한된다.
+- 낙관적 동시성 제어 규약 내에서는 높은 쓰기 트랜잭션 rate는 커밋 실패를 발생시킨다.
+- 쓰기는 10 tps 이하 정도 된다. data lake 앱에서는 충분하다.
+- 스냅샷 격리 수준의 읽기 트랜잭션은 경합이 없기 때문에 동시에 수행될 수 있어서 무제한이다.
+
+# Higher Level Features in Delta
