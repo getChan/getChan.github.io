@@ -194,3 +194,33 @@ mytable/date=2020-01-01/1b8a32d2ad.parquet
 - 스냅샷 격리 수준의 읽기 트랜잭션은 경합이 없기 때문에 동시에 수행될 수 있어서 무제한이다.
 
 # Higher Level Features in Delta
+
+## Time Travel and Rollbacks
+- 전통적인 데이터 레이크 설계에서는 갱신을 되돌리기가 어렵다.
+- delta lake는 데이터의 과거 스냅샷을 쿼리할 수 있다. 이는 전형적인 MVCC 구현이다. 
+
+## Efficient UPSERT, DELETE, and MERGE
+- 분석용 데이터셋의 수정이 필요할 때가 있다. 특정 유저 데이터를 지우는 등.
+- 전통적인 데이터 레이크는 동시 reader를 멈추지 않고 갱신하기 어렵고, 부분 갱신된 상태가 될 수도 있다.
+- delta lake는 로그 수준에서 트랜잭션을 지원하기에 효율적이다.
+
+## Streaming Ingest and Comsumption
+- 전통 데이터 레이크는 스트리밍 처리에 적합하지 않다.
+- 쓰기 컴팩션 : writer의 쓰기 간격이 줄어들수록 small file을 생성하여 reader의 읽기 성능이 저하된다. delta lake는 트랜잭션을 보장하면서 백그라운드 컴팩션이 가능하다. 따라서 오래된 데이터 쿼리 성능을 증가시키면서도 small file 쓰기가 가능하다.
+- Exactly-Once 스트리밍 쓰기 : 일반적인 스트림 처리 시스템은 중복 쓰기를 방지하기 위해 쓰기를 멱등하게 하는 방법이 필요하다. 각 레코드에 고유키를 부여하여 쓰기시 확인하거나, '마지막 버전' 레코드를 원자적으로 갱신하는 방식이다. delta lake는 후자의 방법을 써서 exactly-once 시맨틱을 제공한다.
+- 효율적인 로그 tailing : delta lake의 소비자들은 효율적으로 새 쓰기를 발견할 수 있다. 로그 레코드인 `json` 객체는 사전적으로 증가하는 ID를 이름으로 갖는다. 소비자는 마지막 로그 레코드 ID로 시작하는 LIST연산으로 새 객체를 찾는다. 
+- 위 특징들 때문에 별도의 메세지 버스 없이 delta lake로 스트리밍 처리가 가능하다.
+
+## Data Layout Optimization
+delta lake는 트랜잭션을 보장하면서 갱신이 가능하기 때문에 백그라운드에서 컴팩션, 레코드 순서 변경, 통계, 인덱스 등을 추가할 수 있다.
+
+- `OPTIMIZE`
+  - 실행중인 트랜잭션에 영향을 주지 않고 small object들을 병합하고 통계를 계산한다. 디폴트로 각 객체를 1GB정도로 유지한다.
+- Z-Ordering by Multiple Attributes
+  - 대부분의 데이터셋은 매우 선택적인 쿼리를 수행한다. 
+  - Hive 파티셔닝은 사용할 수 있는 속성의 개수가 제한적이다.
+  - delta lake는 레코드를 여러 속성에 걸쳐 재조직해서 지역성을 높인다.
+  - z-ordering은 통계를 함께 활용하면서 선택적 쿼리에서 파일 I/O를 줄인다.
+  - 테이블 갱신시 인덱스나 통계를 갱신하기도 한다. 
+
+## Caching
