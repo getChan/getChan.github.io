@@ -1,16 +1,19 @@
 // 초대장 정보는 이 객체만 수정하면 전체 화면에 반영됩니다.
 const WEDDING = {
-  groom: "신랑",
-  bride: "신부",
-  heroName: "오늘의 주인공",
-  introDate: "2026. 10. 10 · SAT · 1:00 PM",
-  dateText: "2026년 10월 10일 토요일 오후 1시",
-  place: "웨딩빌리지 대성당 · 1층 그랜드홀",
+  groom: "남궁찬",
+  bride: "차은서",
+  heroName: "남궁찬",
+  introDate: "2027. 05. 08 · SATURDAY",
+  dateText: "2027년 5월 8일 토요일",
+  place: "인천 웨스턴팰리스",
   message:
     "서로의 가장 좋은 친구로,\n오래오래 같은 방향을 바라보며 걷겠습니다.\n귀한 걸음으로 첫 페이지를 축복해 주세요.",
-  calendarStart: "20261010T040000Z",
-  calendarEnd: "20261010T060000Z",
+  calendarStart: "20270508",
+  calendarEnd: "20270509",
+  calendarAllDay: true,
 };
+
+const AMORIA_BGM_ID = "hCdooZxzISo";
 
 const QUESTS = [
   {
@@ -19,7 +22,7 @@ const QUESTS = [
     npc: "헤라 & 사랑의 증표 수집가",
     label: "사랑의 증표",
     title: "네 개의 마음을 모아 주세요",
-    story: "안내자 헤라를 따라 웨딩빌리지에 도착했어요. 약혼반지를 만들려면 네 마을에서 받은 사랑의 증표가 필요합니다. 함께 웃고, 믿고, 기다리고, 아껴 온 네 가지 마음을 꺼내 보세요.",
+    story: "안내자 헤라를 따라 아모리아(웨딩빌리지)에 도착했어요. 약혼반지를 만들려면 네 마을에서 받은 사랑의 증표가 필요합니다. 함께 웃고, 믿고, 기다리고, 아껴 온 네 가지 마음을 꺼내 보세요.",
     task: "헤라의 안내로 입장해 추억 · 믿음 · 기다림 · 다정함의 증표 4개 모으기",
     action: "웨딩빌리지 입장 & 증표 건네기",
     toast: "사랑의 증표 4개를 모았습니다!",
@@ -135,6 +138,7 @@ const dom = {
   calendarButton: document.querySelector("#calendar-button"),
   finalShareButton: document.querySelector("#final-share-button"),
   confetti: document.querySelector("#confetti"),
+  bgmPlayer: document.querySelector("#bgm-player"),
 };
 
 const state = {
@@ -152,6 +156,7 @@ const state = {
   keys: { left: false, right: false },
   soundOn: false,
   audio: null,
+  bgmFrame: null,
   toastTimer: null,
 };
 
@@ -443,6 +448,12 @@ async function shareInvitation() {
 
 function saveCalendar() {
   const safeTitle = `${WEDDING.groom} ♥ ${WEDDING.bride} 결혼식`;
+  const startLine = WEDDING.calendarAllDay
+    ? `DTSTART;VALUE=DATE:${WEDDING.calendarStart}`
+    : `DTSTART:${WEDDING.calendarStart}`;
+  const endLine = WEDDING.calendarAllDay
+    ? `DTEND;VALUE=DATE:${WEDDING.calendarEnd}`
+    : `DTEND:${WEDDING.calendarEnd}`;
   const body = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -450,8 +461,8 @@ function saveCalendar() {
     "BEGIN:VEVENT",
     `UID:wedding-quest-${WEDDING.calendarStart}@invitation`,
     `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
-    `DTSTART:${WEDDING.calendarStart}`,
-    `DTEND:${WEDDING.calendarEnd}`,
+    startLine,
+    endLine,
     `SUMMARY:${safeTitle}`,
     `LOCATION:${WEDDING.place}`,
     `DESCRIPTION:${WEDDING.message.replaceAll("\n", "\\n")}`,
@@ -481,42 +492,53 @@ function resetGame() {
   showToast("첫 번째 퀘스트부터 다시 시작합니다!");
 }
 
-function createMusic() {
+function createAudioEngine() {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!AudioContext) return null;
   const context = new AudioContext();
   const gain = context.createGain();
   gain.gain.value = 0.035;
   gain.connect(context.destination);
+  return { context, gain };
+}
 
-  const notes = [261.63, 329.63, 392, 523.25, 440, 392, 329.63, 293.66];
-  let step = 0;
-  const timer = setInterval(() => {
-    if (!state.soundOn || context.state !== "running") return;
-    const oscillator = context.createOscillator();
-    const noteGain = context.createGain();
-    oscillator.type = step % 4 === 3 ? "triangle" : "sine";
-    oscillator.frequency.value = notes[step % notes.length];
-    noteGain.gain.setValueAtTime(0, context.currentTime);
-    noteGain.gain.linearRampToValueAtTime(0.7, context.currentTime + 0.02);
-    noteGain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.42);
-    oscillator.connect(noteGain);
-    noteGain.connect(gain);
-    oscillator.start();
-    oscillator.stop(context.currentTime + 0.44);
-    step += 1;
-  }, 380);
+function sendBgmCommand(command) {
+  state.bgmFrame?.contentWindow?.postMessage(
+    JSON.stringify({ event: "command", func: command, args: [] }),
+    "*",
+  );
+}
 
-  return { context, gain, timer };
+function startAmoriaBgm() {
+  if (state.bgmFrame) {
+    sendBgmCommand("playVideo");
+    return;
+  }
+
+  const frame = document.createElement("iframe");
+  const origin = encodeURIComponent(window.location.origin);
+  frame.title = "MapleStory Amoria BGM";
+  frame.allow = "autoplay; encrypted-media";
+  frame.referrerPolicy = "strict-origin-when-cross-origin";
+  frame.src = `https://www.youtube-nocookie.com/embed/${AMORIA_BGM_ID}?autoplay=1&loop=1&playlist=${AMORIA_BGM_ID}&controls=0&disablekb=1&fs=0&playsinline=1&enablejsapi=1&origin=${origin}`;
+  frame.addEventListener("load", () => {
+    if (state.soundOn) sendBgmCommand("playVideo");
+  });
+  dom.bgmPlayer.appendChild(frame);
+  state.bgmFrame = frame;
 }
 
 function toggleSound(forceOn) {
   const next = typeof forceOn === "boolean" ? forceOn : !state.soundOn;
-  if (!state.audio) state.audio = createMusic();
-  if (!state.audio) return;
+  if (!state.audio) state.audio = createAudioEngine();
   state.soundOn = next;
-  if (next) state.audio.context.resume();
-  else state.audio.context.suspend();
+  if (next) {
+    state.audio?.context.resume();
+    startAmoriaBgm();
+  } else {
+    state.audio?.context.suspend();
+    sendBgmCommand("pauseVideo");
+  }
   dom.soundButton.classList.toggle("is-on", state.soundOn);
   dom.soundButton.textContent = state.soundOn ? "♫" : "♪";
   dom.soundButton.setAttribute("aria-label", state.soundOn ? "배경음 끄기" : "배경음 켜기");
@@ -545,10 +567,11 @@ function playSuccessSound() {
 
 function bindControls() {
   window.addEventListener("keydown", (event) => {
-    if (["ArrowLeft", "ArrowRight", "ArrowUp", "Alt"].includes(event.key)) event.preventDefault();
+    const isJumpKey = ["Space", "KeyZ", "AltLeft", "AltRight"].includes(event.code);
+    if (["ArrowLeft", "ArrowRight", "ArrowUp"].includes(event.key) || isJumpKey) event.preventDefault();
     if (event.key === "ArrowLeft") state.keys.left = true;
     if (event.key === "ArrowRight") state.keys.right = true;
-    if (event.key === "Alt" && !event.repeat) jump();
+    if (isJumpKey && !event.repeat) jump();
     if (event.key === "ArrowUp" && !event.repeat) interact();
   });
 
@@ -619,7 +642,7 @@ function init() {
     new Promise((resolve) => {
       const image = new Image();
       image.onload = image.onerror = resolve;
-      image.src = "assets/wedding-village-panorama.jpg";
+      image.src = "assets/amoria-background-v2.jpg";
     }),
     new Promise((resolve) => {
       const image = new Image();
