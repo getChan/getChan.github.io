@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#72d9ef" />
+    <meta
+      name="description"
+      content="웨딩빌리지를 모험하며 만나는 모바일 게임형 결혼식 초대장"
+    />
+    <meta property="og:title" content="우리의 웨딩 퀘스트에 초대합니다" />
+    <meta property="og:description" content="방향키로 걷고, 점프하고, 포탈을 타고 결혼식에 놀러오세요!" />
+    <meta property="og:image" content="assets/wedding-village-panorama.jpg" />
+    <title>Wedding Quest · 모바일 청첩장</title>
+    <link rel="preload" href="assets/wedding-village-panorama.jpg" as="image" />
+    <link rel="preload" href="assets/groom-sprite.png" as="image" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="preloader" class="preloader" aria-live="polite">
+      <div class="preloader__leaf">🍁</div>
+      <p>웨딩빌리지로 이동 중...</p>
+      <div class="preloader__bar"><span></span></div>
+    </div>
+
+    <section id="intro" class="intro" aria-labelledby="intro-title">
+      <div class="intro__sparkles" aria-hidden="true"></div>
+      <div class="intro__content">
+        <div class="intro__badge"><span>NEW QUEST</span> WEDDING VILLAGE</div>
+        <p class="intro__eyebrow">우리의 가장 설레는 모험</p>
+        <h1 id="intro-title"><span id="intro-groom">신랑</span><i>♥</i><span id="intro-bride">신부</span></h1>
+        <p class="intro__copy">두 사람이 평생 파티를 맺습니다.<br />소중한 당신을 웨딩 퀘스트에 초대해요.</p>
+        <div class="intro__date" id="intro-date">2026. 10. 10 · SAT · 1:00 PM</div>
+        <button id="start-button" class="maple-button maple-button--primary" type="button">
+          <span>🍁</span> 게임 시작
+        </button>
+        <div class="intro__controls">
+          <span><kbd>←</kbd><kbd>→</kbd> 이동</span>
+          <span><kbd>Alt</kbd> 점프</span>
+          <span><kbd>↑</kbd> 포탈</span>
+        </div>
+        <p class="intro__mobile-note">모바일에서는 화면 아래 버튼을 이용해 주세요</p>
+      </div>
+      <div class="intro__character" aria-hidden="true">
+        <div class="sprite sprite--celebrate"></div>
+      </div>
+      <p class="intro__credit">Wedding Quest Invitation</p>
+    </section>
+
+    <main id="game-shell" class="game-shell is-hidden">
+      <section id="game-viewport" class="game-viewport" aria-label="웨딩빌리지 횡스크롤 게임">
+        <div class="sky-glow" aria-hidden="true"></div>
+        <div id="world" class="world" aria-hidden="true">
+          <div class="world__mist world__mist--one"></div>
+          <div class="world__mist world__mist--two"></div>
+          <div id="portals" class="portals"></div>
+          <div id="player-shadow" class="player-shadow"></div>
+          <div id="player" class="player">
+            <div id="hero-sprite" class="sprite sprite--idle"></div>
+            <div class="player__name" id="player-name">오늘의 주인공</div>
+          </div>
+        </div>
+
+        <header class="hud">
+          <div class="hud__quest">
+            <div class="hud__topline">
+              <span id="location-label">웨딩빌리지 입구</span>
+              <strong><span id="progress-count">0</span>/7</strong>
+            </div>
+            <p id="quest-label">첫 번째 포탈을 찾아가세요</p>
+            <div id="progress-pips" class="progress-pips" aria-label="퀘스트 진행률"></div>
+          </div>
+          <nav class="hud__actions" aria-label="빠른 메뉴">
+            <button id="sound-button" class="round-button" type="button" aria-label="배경음 켜기">♪</button>
+            <button id="guide-button" class="round-button" type="button" aria-label="게임 안내">?</button>
+            <button id="share-button" class="round-button" type="button" aria-label="청첩장 공유">↗</button>
+          </nav>
+        </header>
+
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+        <div id="portal-prompt" class="portal-prompt" aria-live="polite">
+          <kbd>↑</kbd><span>포탈 타기</span>
+        </div>
+
+        <div class="touch-controls" aria-label="모바일 게임 조작 버튼">
+          <div class="touch-controls__move">
+            <button class="control-button control-button--left" data-control="left" type="button" aria-label="왼쪽으로 이동">‹</button>
+            <button class="control-button control-button--right" data-control="right" type="button" aria-label="오른쪽으로 이동">›</button>
+          </div>
+          <div class="touch-controls__action">
+            <button class="control-button control-button--portal" data-control="up" type="button">
+              <span>↑</span><small>PORTAL</small>
+            </button>
+            <button class="control-button control-button--jump" data-control="jump" type="button">
+              <span>ALT</span><small>JUMP</small>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="quest-dialog" class="quest-dialog">
+      <form method="dialog" class="quest-card">
+        <button class="dialog-close" value="cancel" aria-label="닫기" type="submit">×</button>
+        <div class="quest-card__npc">
+          <span id="quest-icon">💌</span>
+          <div><small id="quest-step">QUEST 1</small><strong id="quest-npc">헤라</strong></div>
+        </div>
+        <h2 id="quest-title">웨딩빌리지에 어서 오세요!</h2>
+        <p id="quest-story"></p>
+        <div class="quest-card__task">
+          <span>QUEST</span>
+          <p id="quest-task"></p>
+        </div>
+        <button id="quest-action" class="maple-button maple-button--primary" value="default" type="button">퀘스트 완료</button>
+      </form>
+    </dialog>
+
+    <dialog id="guide-dialog" class="guide-dialog">
+      <form method="dialog" class="guide-card">
+        <button class="dialog-close" value="cancel" aria-label="닫기" type="submit">×</button>
+        <p class="sheet-kicker">HOW TO PLAY</p>
+        <h2>웨딩 퀘스트 안내</h2>
+        <div class="guide-grid">
+          <div><b>← →</b><span>좌우로 이동</span></div>
+          <div><b>ALT</b><span>가볍게 점프</span></div>
+          <div><b>↑</b><span>빛나는 포탈 이용</span></div>
+        </div>
+        <p class="guide-card__tip">빛나는 포탈 가까이에서 위쪽 방향키를 누르면 이야기가 이어져요. 모바일에서는 아래 조작 버튼을 눌러주세요.</p>
+        <button id="reset-button" class="maple-button maple-button--subtle" type="button">처음부터 다시 시작</button>
+      </form>
+    </dialog>
+
+    <dialog id="invitation-dialog" class="invitation-dialog">
+      <article class="invitation-card">
+        <button id="invitation-close" class="dialog-close" aria-label="닫기" type="button">×</button>
+        <div class="invitation-card__ribbon">QUEST COMPLETE</div>
+        <div class="invitation-card__rings">💍</div>
+        <p class="sheet-kicker">TOGETHER FOREVER</p>
+        <h2><span id="invite-groom">신랑</span><i>♥</i><span id="invite-bride">신부</span></h2>
+        <p id="invite-message" class="invitation-card__message"></p>
+        <div class="invitation-card__details">
+          <div><small>DATE</small><strong id="invite-date">2026년 10월 10일 토요일 오후 1시</strong></div>
+          <div><small>PLACE</small><strong id="invite-place">웨딩빌리지 대성당 · 1층 그랜드홀</strong></div>
+        </div>
+        <div class="invitation-card__actions">
+          <button id="calendar-button" class="maple-button maple-button--subtle" type="button">일정 저장</button>
+          <button id="final-share-button" class="maple-button maple-button--primary" type="button">초대장 공유</button>
+        </div>
+        <button id="replay-button" class="text-button" type="button">웨딩빌리지 다시 걷기 ↺</button>
+      </article>
+    </dialog>
+
+    <div id="confetti" class="confetti" aria-hidden="true"></div>
+    <script src="game.js"></script>
+  </body>
+</html>
