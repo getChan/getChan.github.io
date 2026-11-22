@@ -36,6 +36,10 @@
         {
           "title": "Pipeline cost optimization.",
           "description": "Established per-application cost monitoring and optimized high-cost applications while preserving business logic."
+        },
+        {
+          "title": "Data processing environment for partners.",
+          "description": "Aligned technical requirements with partners to meet data business needs. Enabled secure access to the internal data platform and resolved build and runtime compatibility issues so data processing code could run in the internal environment."
         }
       ]
     },
