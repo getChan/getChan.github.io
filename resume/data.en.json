@@ -39,7 +39,7 @@
         },
         {
           "title": "Data processing environment for partners.",
-          "description": "Aligned technical requirements with partners to meet data business needs. Enabled secure access to the internal data platform and resolved build and runtime compatibility issues so data processing code could run in the internal environment."
+          "description": "Coordinated technical requirements with partners to meet data business needs. Provided secure access to the internal platform and resolved compatibility issues between build and runtime environments."
         }
       ]
     },
