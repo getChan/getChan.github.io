@@ -1,0 +1,102 @@
+{
+  "name": "Namgung Chan",
+  "role": "Software Engineer",
+  "contact": [
+    {
+      "label": "9511chn@gmail.com",
+      "url": "mailto:9511chn@gmail.com"
+    },
+    {
+      "label": "Blog",
+      "url": "https://getchan.github.io/"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/getChan"
+    }
+  ],
+  "experience": [
+    {
+      "company": "TMAP Mobility",
+      "period": "2023.10–Present",
+      "highlights": [
+        {
+          "title": "Databricks adoption.",
+          "description": "Led the architecture, implementation, and migration of a 4.7 PB data platform. Moved company-wide analytics first while keeping existing batch jobs running. Addressed compatibility and performance issues and phased the data and batch migration to manage cost and operational risk.",
+          "presentationId": "databricks-ai-days-seoul-2026"
+        },
+        {
+          "title": "Company-wide Airflow platform.",
+          "description": "Built a Kubernetes-based Airflow platform for all internal data platform users. Improved security and governance with authentication, authorization, and accounting (AAA)."
+        },
+        {
+          "title": "Data pipeline workload standardization.",
+          "description": "Unified Spark job submission across EMR and Databricks and migrated selected batch workloads. Added lineage for EMR Spark jobs and laid the groundwork for standardized resource configuration and AI automation."
+        },
+        {
+          "title": "Pipeline cost optimization.",
+          "description": "Established per-application cost monitoring and optimized high-cost applications while preserving business logic."
+        }
+      ]
+    },
+    {
+      "company": "Kakao Enterprise",
+      "period": "2020.11–2023.08",
+      "highlights": [
+        {
+          "title": "Knowledge graph platform.",
+          "description": "Evaluated triple stores and graph databases, implemented knowledge graph reasoning, and built data processing for the search engine."
+        },
+        {
+          "title": "Knowledge graph streaming pipelines.",
+          "description": "Built Kafka and Spring Cloud Data Flow pipelines that transform and load source data into the knowledge graph, with autoscaling for pipeline applications."
+        },
+        {
+          "title": "Web search crawler.",
+          "description": "Designed and developed a new crawler and operated a crawler covering 1.3 million URLs and 1.5 TB of data. Refactored legacy code and automated monitoring."
+        },
+        {
+          "title": "Crawler infrastructure migration.",
+          "description": "Built a 33-node on-premises Hadoop, HBase, and Spark cluster and migrated data to it. Replaced MapReduce jobs with Spark, increasing processing speed to about 4× its previous level."
+        }
+      ]
+    },
+    {
+      "company": "Kakao",
+      "period": "2020.07–2020.08",
+      "qualifier": "(Intern)",
+      "description": "Built a Python and Flask web tool to load file-based data into a relational database."
+    },
+    {
+      "company": "Mondrian AI",
+      "period": "2020.03–2020.06",
+      "description": "Automated IoT data extraction and loading, and developed web APIs."
+    }
+  ],
+  "presentations": [
+    {
+      "id": "databricks-ai-days-seoul-2026",
+      "label": "The Real Challenges After TMAP Adopted Databricks",
+      "url": "https://youtu.be/TidVvrFpur4",
+      "event": "Databricks AI Days Seoul 2026"
+    }
+  ],
+  "contributions": {
+    "label": "Open Source Contributions",
+    "url": "https://github.com/search?q=is%3Apr+is%3Apublic+author%3AgetChan+sort%3Aupdated-desc&type=pullrequests",
+    "summary": "Contributions to the Apache DataFusion and Arrow ecosystem."
+  },
+  "skills": [
+    "Java, Python, Scala",
+    "Distributed data processing",
+    "Workflow orchestration",
+    "Cloud and container infrastructure",
+    "Relational and distributed databases",
+    "Data governance"
+  ],
+  "education": {
+    "school": "Incheon National University",
+    "degree": "Bachelor’s degree in Computer Engineering",
+    "period": "2014–2020"
+  }
+}

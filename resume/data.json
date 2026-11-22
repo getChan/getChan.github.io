@@ -1,0 +1,102 @@
+{
+  "name": "남궁찬",
+  "role": "Software Engineer",
+  "contact": [
+    {
+      "label": "9511chn@gmail.com",
+      "url": "mailto:9511chn@gmail.com"
+    },
+    {
+      "label": "Blog",
+      "url": "https://getchan.github.io/"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/getChan"
+    }
+  ],
+  "experience": [
+    {
+      "company": "티맵모빌리티",
+      "period": "2023.10–현재",
+      "highlights": [
+        {
+          "title": "Databricks 도입 총괄.",
+          "description": "4.7PB 규모의 데이터 플랫폼을 현대화하기 위해 아키텍처 설계부터 구축·전환까지 주도. 기존 배치 운영을 유지하며 전사 분석 환경을 먼저 전환하고, 호환성·성능 문제를 해결하며 비용과 안정성을 고려해 데이터와 배치 작업을 단계적으로 이관.",
+          "presentationId": "databricks-ai-days-seoul-2026"
+        },
+        {
+          "title": "전사 Airflow 플랫폼 구축.",
+          "description": "Kubernetes 기반으로 구축해 사내 데이터 플랫폼 사용자 전체가 이용. AAA(인증·인가·사용 이력 기록)를 적용해 보안과 거버넌스를 개선."
+        },
+        {
+          "title": "데이터 파이프라인 워크로드 표준화.",
+          "description": "EMR과 Databricks의 Spark 작업 제출 방식을 공통화해 배치 워크로드 일부를 이관. EMR Spark 작업의 리니지를 추가로 확보하고, 리소스 설정 표준화와 AI 자동화 기반을 마련."
+        },
+        {
+          "title": "데이터 파이프라인 효율화.",
+          "description": "앱별 비용 모니터링 기반을 마련하고, 비용이 높은 앱을 선별해 비즈니스 로직을 유지한 채 최적화."
+        }
+      ]
+    },
+    {
+      "company": "카카오엔터프라이즈",
+      "period": "2020.11–2023.08",
+      "highlights": [
+        {
+          "title": "지식그래프 플랫폼 개발.",
+          "description": "트리플 스토어와 그래프 DB를 검증하고, 지식그래프 추론 기능과 검색 엔진용 데이터 처리 로직을 구현."
+        },
+        {
+          "title": "지식그래프 스트리밍 파이프라인 개발.",
+          "description": "Kafka와 Spring Cloud Data Flow 기반으로 원천 데이터를 지식그래프로 변환·적재하고, 파이프라인 애플리케이션의 자동 확장 기능을 구현."
+        },
+        {
+          "title": "웹 검색 크롤러 개발·운영.",
+          "description": "신규 크롤러를 설계·개발하고 130만 URL·1.5TB 규모의 크롤러를 운영. 레거시 코드를 리팩터링하고 모니터링을 자동화."
+        },
+        {
+          "title": "크롤링 인프라 이관 및 성능 개선.",
+          "description": "온프레미스 33노드 Hadoop·HBase·Spark 클러스터를 구축해 데이터를 이관하고, MapReduce 작업을 Spark로 전환해 처리 속도를 약 4배로 높임."
+        }
+      ]
+    },
+    {
+      "company": "카카오",
+      "period": "2020.07–2020.08",
+      "qualifier": "(인턴)",
+      "description": "Python·Flask로 파일 데이터를 관계형 DB에 적재하는 웹 운영 도구 개발."
+    },
+    {
+      "company": "Mondrian AI",
+      "period": "2020.03–2020.06",
+      "description": "IoT 데이터 추출·적재를 자동화하고 웹 API 개발."
+    }
+  ],
+  "presentations": [
+    {
+      "id": "databricks-ai-days-seoul-2026",
+      "label": "TMAP의 Databricks 도입 이후의 진짜 과제",
+      "url": "https://youtu.be/TidVvrFpur4",
+      "event": "Databricks AI Days Seoul 2026"
+    }
+  ],
+  "contributions": {
+    "label": "Open Source Contributions",
+    "url": "https://github.com/search?q=is%3Apr+is%3Apublic+author%3AgetChan+sort%3Aupdated-desc&type=pullrequests",
+    "summary": "Apache DataFusion, Arrow 생태계에 참여"
+  },
+  "skills": [
+    "Java, Python, Scala",
+    "분산 데이터 처리",
+    "워크플로 오케스트레이션",
+    "클라우드·컨테이너 인프라",
+    "관계형·분산 데이터베이스",
+    "데이터 거버넌스"
+  ],
+  "education": {
+    "school": "인천대학교",
+    "degree": "컴퓨터공학 학사",
+    "period": "2014–2020"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "name": "Namgung Chan",
+  "role": "软件工程师",
+  "contact": [
+    {
+      "label": "9511chn@gmail.com",
+      "url": "mailto:9511chn@gmail.com"
+    },
+    {
+      "label": "博客",
+      "url": "https://getchan.github.io/"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/getChan"
+    }
+  ],
+  "experience": [
+    {
+      "company": "TMAP Mobility",
+      "period": "2023.10–至今",
+      "highlights": [
+        {
+          "title": "主导 Databricks 引入。",
+          "description": "负责 4.7 PB 数据平台现代化的架构设计、实施和迁移。在维持现有批处理任务运行的同时，优先迁移全公司的分析环境。解决兼容性与性能问题，并兼顾成本和稳定性，分阶段迁移数据及批处理任务。",
+          "presentationId": "databricks-ai-days-seoul-2026"
+        },
+        {
+          "title": "搭建全公司共用的 Airflow 平台。",
+          "description": "基于 Kubernetes 搭建平台，供公司内部所有数据平台用户使用。通过身份验证、授权和使用记录（AAA）加强安全与治理。"
+        },
+        {
+          "title": "数据管道工作负载标准化。",
+          "description": "统一 EMR 和 Databricks 的 Spark 任务提交方式，并迁移部分批处理工作负载。补充 EMR Spark 任务的数据血缘，为资源配置标准化和 AI 自动化奠定基础。"
+        },
+        {
+          "title": "数据管道成本优化。",
+          "description": "建立应用级成本监控，在保留业务逻辑的前提下优化高成本应用。"
+        }
+      ]
+    },
+    {
+      "company": "Kakao Enterprise",
+      "period": "2020.11–2023.08",
+      "highlights": [
+        {
+          "title": "知识图谱平台开发。",
+          "description": "验证三元组存储和图数据库，实现知识图谱推理，并开发供搜索引擎使用的数据处理逻辑。"
+        },
+        {
+          "title": "知识图谱流式数据管道。",
+          "description": "使用 Kafka 和 Spring Cloud Data Flow 将源数据转换并加载至知识图谱，同时实现管道应用的自动扩缩容。"
+        },
+        {
+          "title": "网页搜索爬虫开发与运维。",
+          "description": "设计并开发新爬虫，运维覆盖 130 万个 URL、数据量为 1.5 TB 的爬虫。重构旧代码并实现监控自动化。"
+        },
+        {
+          "title": "爬虫基础设施迁移与性能优化。",
+          "description": "搭建 33 节点的本地 Hadoop、HBase 和 Spark 集群并迁移数据。将 MapReduce 作业迁移至 Spark，处理速度约为原来的 4 倍。"
+        }
+      ]
+    },
+    {
+      "company": "Kakao",
+      "period": "2020.07–2020.08",
+      "qualifier": "（实习）",
+      "description": "使用 Python 和 Flask 开发 Web 运维工具，将文件数据导入关系型数据库。"
+    },
+    {
+      "company": "Mondrian AI",
+      "period": "2020.03–2020.06",
+      "description": "实现物联网数据提取和加载的自动化，并开发 Web API。"
+    }
+  ],
+  "presentations": [
+    {
+      "id": "databricks-ai-days-seoul-2026",
+      "label": "TMAP 引入 Databricks 后面临的实际挑战",
+      "url": "https://youtu.be/TidVvrFpur4",
+      "event": "Databricks AI Days Seoul 2026"
+    }
+  ],
+  "contributions": {
+    "label": "开源贡献",
+    "url": "https://github.com/search?q=is%3Apr+is%3Apublic+author%3AgetChan+sort%3Aupdated-desc&type=pullrequests",
+    "summary": "参与 Apache DataFusion 和 Arrow 生态。"
+  },
+  "skills": [
+    "Java、Python、Scala",
+    "分布式数据处理",
+    "工作流编排",
+    "云与容器基础设施",
+    "关系型与分布式数据库",
+    "数据治理"
+  ],
+  "education": {
+    "school": "仁川大学",
+    "degree": "计算机工程学士",
+    "period": "2014–2020"
+  }
+}

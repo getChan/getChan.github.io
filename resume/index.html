@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이력서</title>
+<link rel="stylesheet" href="styles.css">
+<script src="render.js" defer></script>
+</head>
+<body>
+<main>
+  <noscript>이력서를 보려면 JavaScript를 켜 주세요.</noscript>
+  <p id="resume-error" role="alert" hidden></p>
+  <div id="resume" hidden>
+    <div class="toolbar">
+      <nav id="languages" aria-label="이력서 언어">
+        <a href="./" data-language="ko" lang="ko">한국어</a>
+        <a href="?lang=en" data-language="en" lang="en">English</a>
+        <a href="?lang=zh-CN" data-language="zh-CN" lang="zh-CN">简体中文</a>
+      </nav>
+      <button type="button" id="print-resume" data-label="print"></button>
+    </div>
+    <header class="identity">
+      <h1 id="name"></h1>
+      <p class="role" id="role"></p>
+      <p class="contact" id="contact"></p>
+    </header>
+    <section aria-labelledby="experience-heading">
+      <h2 class="heading" id="experience-heading" data-label="experience"></h2>
+      <div id="experience"></div>
+    </section>
+    <section class="presentations" aria-labelledby="presentations-heading">
+      <h2 class="heading" id="presentations-heading" data-label="presentations"></h2>
+      <div id="presentations"></div>
+    </section>
+    <section aria-labelledby="contributions-heading">
+      <h2 class="heading" id="contributions-heading"><a id="contributions"></a></h2>
+      <p id="contributions-summary"></p>
+    </section>
+    <section aria-labelledby="skills-heading">
+      <h2 class="heading" id="skills-heading" data-label="skills"></h2>
+      <p id="skills"></p>
+    </section>
+    <section aria-labelledby="education-heading">
+      <h2 class="heading" id="education-heading" data-label="education"></h2>
+      <div class="line">
+        <div><h3 id="school"></h3><p id="degree"></p></div>
+        <span class="date" id="education-period"></span>
+      </div>
+    </section>
+  </div>
+</main>
+
+<template id="experience-entry">
+  <article class="job">
+    <div class="line"><h3></h3><span class="date"></span></div>
+  </article>
+</template>
+
+<template id="presentation-entry">
+  <div class="line">
+    <h3><a></a></h3>
+    <span class="event"></span>
+  </div>
+</template>
+</body>
+</html>
