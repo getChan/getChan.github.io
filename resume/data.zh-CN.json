@@ -17,7 +17,7 @@
   ],
   "experience": [
     {
-      "company": "TMAP Mobility",
+      "company": "TMAP Mobility - 数据平台",
       "period": "2023.10–至今",
       "highlights": [
         {
@@ -40,24 +40,16 @@
       ]
     },
     {
-      "company": "Kakao Enterprise",
+      "company": "Kakao Enterprise - 搜索部门",
       "period": "2020.11–2023.08",
       "highlights": [
         {
-          "title": "知识图谱平台开发。",
-          "description": "验证三元组存储和图数据库，实现知识图谱推理，并开发供搜索引擎使用的数据处理逻辑。"
+          "title": "Daum 和 Kakao 搜索爬虫开发与运维。",
+          "description": "设计并开发站点地图爬虫，运维应用商店爬虫。搭建 33 节点的本地 Hadoop、HBase 和 Spark 集群，并迁移爬虫基础设施。将 MapReduce 作业迁移至 Spark。"
         },
         {
-          "title": "知识图谱流式数据管道。",
-          "description": "使用 Kafka 和 Spring Cloud Data Flow 将源数据转换并加载至知识图谱，同时实现管道应用的自动扩缩容。"
-        },
-        {
-          "title": "网页搜索爬虫开发与运维。",
-          "description": "设计并开发新爬虫，运维覆盖 130 万个 URL、数据量为 1.5 TB 的爬虫。重构旧代码并实现监控自动化。"
-        },
-        {
-          "title": "爬虫基础设施迁移与性能优化。",
-          "description": "搭建 33 节点的本地 Hadoop、HBase 和 Spark 集群并迁移数据。将 MapReduce 作业迁移至 Spark，处理速度约为原来的 4 倍。"
+          "title": "知识图谱平台原型。",
+          "description": "评估图数据库的适用性，并对文档数据进行图数据建模与 ETL。"
         }
       ]
     },

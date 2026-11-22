@@ -17,7 +17,7 @@
   ],
   "experience": [
     {
-      "company": "TMAP Mobility",
+      "company": "TMAP Mobility - Data Platform",
       "period": "2023.10–Present",
       "highlights": [
         {
@@ -40,24 +40,16 @@
       ]
     },
     {
-      "company": "Kakao Enterprise",
+      "company": "Kakao Enterprise - Search Division",
       "period": "2020.11–2023.08",
       "highlights": [
         {
-          "title": "Knowledge graph platform.",
-          "description": "Evaluated triple stores and graph databases, implemented knowledge graph reasoning, and built data processing for the search engine."
+          "title": "Web crawler development and operations for Daum and Kakao Search.",
+          "description": "Designed and built a sitemap crawler and operated an app store crawler. Set up a 33-node on-premises Hadoop, HBase, and Spark cluster and migrated the crawling infrastructure. Converted MapReduce jobs to Spark."
         },
         {
-          "title": "Knowledge graph streaming pipelines.",
-          "description": "Built Kafka and Spring Cloud Data Flow pipelines that transform and load source data into the knowledge graph, with autoscaling for pipeline applications."
-        },
-        {
-          "title": "Web search crawler.",
-          "description": "Designed and developed a new crawler and operated a crawler covering 1.3 million URLs and 1.5 TB of data. Refactored legacy code and automated monitoring."
-        },
-        {
-          "title": "Crawler infrastructure migration.",
-          "description": "Built a 33-node on-premises Hadoop, HBase, and Spark cluster and migrated data to it. Replaced MapReduce jobs with Spark, increasing processing speed to about 4× its previous level."
+          "title": "Knowledge graph platform prototype.",
+          "description": "Evaluated the use of a graph database and performed graph data modeling and ETL for document data."
         }
       ]
     },
