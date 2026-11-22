@@ -56,22 +56,21 @@ function renderExperience(entry, presentations, videoLabel) {
   }
   article.querySelector('.date').textContent = entry.period;
 
-  if (entry.highlights?.length) {
-    const list = document.createElement('ul');
-    for (const { title, description, presentationId } of entry.highlights) {
-      const item = document.createElement('li');
-      item.append(textElement('strong', title), ' ', description);
-      const presentation = presentations.find(talk => talk.id === presentationId);
-      if (presentation) {
-        const link = setLink(document.createElement('a'), { label: videoLabel, url: presentation.url });
-        item.append(' ', link);
-      }
-      list.append(item);
+  const list = document.createElement('ul');
+  const highlights = entry.highlights?.length ? entry.highlights : [{ description: entry.description }];
+  for (const { title, description, presentationId } of highlights) {
+    const item = document.createElement('li');
+    if (title) item.append(textElement('strong', title), ' ');
+    item.append(description);
+
+    const presentation = presentationId && presentations.find(talk => talk.id === presentationId);
+    if (presentation) {
+      const link = setLink(document.createElement('a'), { label: videoLabel, url: presentation.url });
+      item.append(' ', link);
     }
-    article.append(list);
-  } else {
-    article.append(textElement('p', entry.description));
+    list.append(item);
   }
+  article.append(list);
   return article;
 }
 
@@ -106,7 +105,13 @@ function renderResume(resume) {
   document.getElementById('presentations').replaceChildren(...resume.presentations.map(renderPresentation));
 
   setLink(document.getElementById('contributions'), resume.contributions);
-  document.getElementById('contributions-summary').textContent = resume.contributions.summary;
+  document.getElementById('contributions-summary').textContent =
+    resume.contributions.ecosystem ?? resume.contributions.summary;
+  const highlight = document.getElementById('contributions-highlight');
+  if (highlight && resume.contributions.highlight) {
+    setLink(highlight.querySelector('a'), resume.contributions.highlight);
+    highlight.hidden = false;
+  }
 
   document.getElementById('skills').textContent = resume.skills.join(' · ');
 

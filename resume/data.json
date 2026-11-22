@@ -22,7 +22,7 @@
       "highlights": [
         {
           "title": "Databricks 도입 총괄.",
-          "description": "4.7PB 규모의 데이터 플랫폼을 현대화하기 위해 아키텍처 설계부터 구축·전환까지 주도. 기존 배치 운영을 유지하며 전사 분석 환경을 먼저 전환하고, 호환성·성능 문제를 해결하며 비용과 안정성을 고려해 데이터와 배치 작업을 단계적으로 이관.",
+          "description": "4.7PB 규모의 데이터 플랫폼에서 Databricks 아키텍처 설계·구축을 주도. 기존 배치 운영을 유지하면서 전사 분석 환경을 전환하고, 데이터와 일부 배치 작업을 단계적으로 이관.",
           "presentationId": "databricks-ai-days-seoul-2026"
         },
         {
@@ -65,12 +65,20 @@
       "company": "카카오",
       "period": "2020.07–2020.08",
       "qualifier": "(인턴)",
-      "description": "Python·Flask로 파일 데이터를 관계형 DB에 적재하는 웹 운영 도구 개발."
+      "highlights": [
+        {
+          "description": "Python·Flask로 파일 데이터를 관계형 DB에 적재하는 웹 운영 도구 개발."
+        }
+      ]
     },
     {
       "company": "Mondrian AI",
       "period": "2020.03–2020.06",
-      "description": "IoT 데이터 추출·적재를 자동화하고 웹 API 개발."
+      "highlights": [
+        {
+          "description": "IoT 데이터 추출·적재를 자동화하고 웹 API 개발."
+        }
+      ]
     }
   ],
   "presentations": [
@@ -84,15 +92,20 @@
   "contributions": {
     "label": "Open Source Contributions",
     "url": "https://github.com/search?q=is%3Apr+is%3Apublic+author%3AgetChan+sort%3Aupdated-desc&type=pullrequests",
-    "summary": "Apache DataFusion, Arrow 생태계에 참여"
+    "ecosystem": "Apache DataFusion Ecosystem",
+    "highlight": {
+      "label": "DataFusion의 Avro 리더를 arrow-avro로 전환하고 내부 변환 코드 제거",
+      "url": "https://github.com/apache/datafusion/pull/17861"
+    }
   },
   "skills": [
-    "Java, Python, Scala",
-    "분산 데이터 처리",
-    "워크플로 오케스트레이션",
-    "클라우드·컨테이너 인프라",
-    "관계형·분산 데이터베이스",
-    "데이터 거버넌스"
+    "Java",
+    "Python",
+    "데이터 엔지니어링",
+    "웹 애플리케이션",
+    "데이터베이스",
+    "분산 시스템",
+    "클라우드"
   ],
   "education": {
     "school": "인천대학교",

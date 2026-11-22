@@ -22,7 +22,6 @@ a { color: inherit; text-underline-offset: .17em; }
 .heading { border-bottom: 2px solid var(--accent); padding-bottom: .7mm; margin-bottom: 1.65mm; }
 #resume > section { margin-top: 5mm; }
 .job + .job { margin-top: 3mm; }
-.job p { margin-top: .55mm; }
 .job a { white-space: nowrap; }
 .line { display: flex; justify-content: space-between; align-items: baseline; gap: 5mm; }
 .qualifier { font-weight: 400; }

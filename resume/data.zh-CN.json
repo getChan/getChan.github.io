@@ -22,7 +22,7 @@
       "highlights": [
         {
           "title": "主导 Databricks 引入。",
-          "description": "负责 4.7 PB 数据平台现代化的架构设计、实施和迁移。在维持现有批处理任务运行的同时，优先迁移全公司的分析环境。解决兼容性与性能问题，并兼顾成本和稳定性，分阶段迁移数据及批处理任务。",
+          "description": "主导在 4.7 PB 数据平台上设计和部署 Databricks。保持现有批处理任务运行，将全公司的分析环境迁移至 Databricks，并分阶段迁移数据和部分批处理任务。",
           "presentationId": "databricks-ai-days-seoul-2026"
         },
         {
@@ -65,12 +65,20 @@
       "company": "Kakao",
       "period": "2020.07–2020.08",
       "qualifier": "（实习）",
-      "description": "使用 Python 和 Flask 开发 Web 运维工具，将文件数据导入关系型数据库。"
+      "highlights": [
+        {
+          "description": "使用 Python 和 Flask 开发 Web 运维工具，将文件数据导入关系型数据库。"
+        }
+      ]
     },
     {
       "company": "Mondrian AI",
       "period": "2020.03–2020.06",
-      "description": "实现物联网数据提取和加载的自动化，并开发 Web API。"
+      "highlights": [
+        {
+          "description": "实现物联网数据提取和加载的自动化，并开发 Web API。"
+        }
+      ]
     }
   ],
   "presentations": [
@@ -84,15 +92,20 @@
   "contributions": {
     "label": "开源贡献",
     "url": "https://github.com/search?q=is%3Apr+is%3Apublic+author%3AgetChan+sort%3Aupdated-desc&type=pullrequests",
-    "summary": "参与 Apache DataFusion 和 Arrow 生态。"
+    "ecosystem": "Apache DataFusion Ecosystem",
+    "highlight": {
+      "label": "将 DataFusion 的 Avro 读取器迁移至 arrow-avro，并移除内部转换代码",
+      "url": "https://github.com/apache/datafusion/pull/17861"
+    }
   },
   "skills": [
-    "Java、Python、Scala",
-    "分布式数据处理",
-    "工作流编排",
-    "云与容器基础设施",
-    "关系型与分布式数据库",
-    "数据治理"
+    "Java",
+    "Python",
+    "数据工程",
+    "Web 应用",
+    "数据库",
+    "分布式系统",
+    "云计算"
   ],
   "education": {
     "school": "仁川大学",

@@ -22,7 +22,7 @@
       "highlights": [
         {
           "title": "Databricks adoption.",
-          "description": "Led the architecture, implementation, and migration of a 4.7 PB data platform. Moved company-wide analytics first while keeping existing batch jobs running. Addressed compatibility and performance issues and phased the data and batch migration to manage cost and operational risk.",
+          "description": "Led the design and implementation of Databricks on a 4.7 PB data platform. Moved company-wide analytics to Databricks while keeping existing batch jobs running, and migrated data and selected batch jobs in phases.",
           "presentationId": "databricks-ai-days-seoul-2026"
         },
         {
@@ -65,12 +65,20 @@
       "company": "Kakao",
       "period": "2020.07–2020.08",
       "qualifier": "(Intern)",
-      "description": "Built a Python and Flask web tool to load file-based data into a relational database."
+      "highlights": [
+        {
+          "description": "Built a Python and Flask web tool to load file-based data into a relational database."
+        }
+      ]
     },
     {
       "company": "Mondrian AI",
       "period": "2020.03–2020.06",
-      "description": "Automated IoT data extraction and loading, and developed web APIs."
+      "highlights": [
+        {
+          "description": "Automated IoT data extraction and loading, and developed web APIs."
+        }
+      ]
     }
   ],
   "presentations": [
@@ -84,15 +92,20 @@
   "contributions": {
     "label": "Open Source Contributions",
     "url": "https://github.com/search?q=is%3Apr+is%3Apublic+author%3AgetChan+sort%3Aupdated-desc&type=pullrequests",
-    "summary": "Contributions to the Apache DataFusion and Arrow ecosystem."
+    "ecosystem": "Apache DataFusion Ecosystem",
+    "highlight": {
+      "label": "Migrated DataFusion’s Avro reader to arrow-avro and removed internal conversion code",
+      "url": "https://github.com/apache/datafusion/pull/17861"
+    }
   },
   "skills": [
-    "Java, Python, Scala",
-    "Distributed data processing",
-    "Workflow orchestration",
-    "Cloud and container infrastructure",
-    "Relational and distributed databases",
-    "Data governance"
+    "Java",
+    "Python",
+    "Data Engineering",
+    "Web Applications",
+    "Databases",
+    "Distributed Systems",
+    "Cloud Computing"
   ],
   "education": {
     "school": "Incheon National University",
