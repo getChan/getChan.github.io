@@ -87,12 +87,8 @@
   ],
   "contributions": {
     "label": "Open Source Contributions",
-    "url": "https://github.com/search?q=is%3Apr+is%3Apublic+author%3AgetChan+sort%3Aupdated-desc&type=pullrequests",
-    "ecosystem": "Apache DataFusion Ecosystem",
-    "highlight": {
-      "label": "DataFusion의 Avro 리더를 arrow-avro로 전환하고 내부 변환 코드 제거",
-      "url": "https://github.com/apache/datafusion/pull/17861"
-    }
+    "url": "https://github.com/search?q=is%3Apr+is%3Apublic+author%3AgetChan+sort%3Aupdated-desc+repo%3Adatafusion-contrib%2Fdatafusion-variant+repo%3Aapache%2Fdatafusion+repo%3Aapache%2Farrow-rs+repo%3Aapache%2Fdatafusion-comet+repo%3Adelta-io%2Fdelta-rs&type=pullrequests",
+    "ecosystem": "Apache DataFusion Ecosystem"
   },
   "skills": [
     "Java",

@@ -87,12 +87,8 @@
   ],
   "contributions": {
     "label": "开源贡献",
-    "url": "https://github.com/search?q=is%3Apr+is%3Apublic+author%3AgetChan+sort%3Aupdated-desc&type=pullrequests",
-    "ecosystem": "Apache DataFusion Ecosystem",
-    "highlight": {
-      "label": "将 DataFusion 的 Avro 读取器迁移至 arrow-avro，并移除内部转换代码",
-      "url": "https://github.com/apache/datafusion/pull/17861"
-    }
+    "url": "https://github.com/search?q=is%3Apr+is%3Apublic+author%3AgetChan+sort%3Aupdated-desc+repo%3Adatafusion-contrib%2Fdatafusion-variant+repo%3Aapache%2Fdatafusion+repo%3Aapache%2Farrow-rs+repo%3Aapache%2Fdatafusion-comet+repo%3Adelta-io%2Fdelta-rs&type=pullrequests",
+    "ecosystem": "Apache DataFusion Ecosystem"
   },
   "skills": [
     "Java",

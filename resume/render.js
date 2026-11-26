@@ -104,14 +104,13 @@ function renderResume(resume) {
   document.getElementById('experience').replaceChildren(...jobs);
   document.getElementById('presentations').replaceChildren(...resume.presentations.map(renderPresentation));
 
-  setLink(document.getElementById('contributions'), resume.contributions);
-  document.getElementById('contributions-summary').textContent =
-    resume.contributions.ecosystem ?? resume.contributions.summary;
-  const highlight = document.getElementById('contributions-highlight');
-  if (highlight && resume.contributions.highlight) {
-    setLink(highlight.querySelector('a'), resume.contributions.highlight);
-    highlight.hidden = false;
-  }
+  const contributions = resume.contributions;
+  document.getElementById('contributions').textContent = contributions.label;
+  const ecosystemLink = setLink(document.createElement('a'), {
+    label: contributions.ecosystem ?? contributions.summary,
+    url: contributions.url,
+  });
+  document.getElementById('contributions-summary').replaceChildren(ecosystemLink);
 
   document.getElementById('skills').textContent = resume.skills.join(' · ');
 
